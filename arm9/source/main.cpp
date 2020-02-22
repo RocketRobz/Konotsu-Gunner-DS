@@ -13,6 +13,7 @@
 
 #include "graphics/fontHandler.h"
 
+#include "player.h"
 #include "level.h"
 
 #include "soundbank.h"
@@ -71,7 +72,10 @@ int main(int argc, char **argv) {
 
 	InitSound();	
 	graphicsInit();
+	playerGraphicLoad();
 	fontInit();
+
+	setPlayerPosition(32, 146);
 
 	while (1) {
 		clearText();

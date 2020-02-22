@@ -5,6 +5,8 @@
 #include "graphics/fontHandler.h"
 #include "graphics/graphics.h"
 
+#include "player.h"
+
 #include "bottomImage.h"
 #include "tiles.h"
 
@@ -52,10 +54,13 @@ void levelGraphicLoad(void) {
 void levelMode(void) {
 	scanKeys();
 	int pressed = keysDown();
+	int held = keysHeld();
+	
+	playerLoop(pressed, held);
 }
 
 void levelGraphicDisplay(void) {
-	glBoxFilled(0, 0, 256, 192, RGB15(255/8, 255/8, 255/8));
+	//glBoxFilled(0, 0, 256, 192, RGB15(255/8, 255/8, 255/8));
 	for (int x = 0; x < 256; x += 16) {
 		for (int y = 0; y < 192; y += 16) {
 			glSprite(x, y, GL_FLIP_NONE, &tileImage[bgTile]);
@@ -64,6 +69,7 @@ void levelGraphicDisplay(void) {
 	for (int floorRenderCount = 0; floorRenderCount < 256; floorRenderCount += 16) {
 		glSprite(floorRenderCount+floorXpos, 176, GL_FLIP_NONE, &tileImage[grayBlockTile]);
 	}
+	renderPlayer();
 }
 
 void levelGraphicBottomDisplay(void) {
