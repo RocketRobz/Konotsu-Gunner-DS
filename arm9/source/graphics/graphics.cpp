@@ -118,6 +118,7 @@ static void vBlankHandler()
 		}
 		else
 		{
+			levelGraphicBottomDisplay();
 			updateText(false);
 		}
 		glColor(RGB15(31, 31, 31));
