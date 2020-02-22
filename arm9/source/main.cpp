@@ -37,7 +37,7 @@ void InitSound() {
 	};*/
 
 	mmLoad(MOD_ALTIT);
-	mmSetModuleTempo(0x3E0);
+	mmSetModuleTempo(0x390);
 	mmStart(MOD_ALTIT, MM_PLAY_LOOP);
 }
 
