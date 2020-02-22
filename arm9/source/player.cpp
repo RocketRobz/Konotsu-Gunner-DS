@@ -7,9 +7,18 @@
 
 #include "sprite_player.h"
 
+extern u8* mapLocation;
+
+extern int mapHsize;
+extern int mapVsize;
+
+extern int cameraXpos;
+extern int cameraYpos;
+
 static bool playerDirection = true;
 static bool animateLegs = false;
-static int playerTexID, playerX, playerY, legAniFrame, legAniDelay;
+static int fallDelay = 0;
+static int playerTexID, playerX, playerY, playerYfallSpeed=1, legAniFrame, legAniDelay;
 static glImage playerImage[(128 / 16) * (16 / 16)];
 
 void setPlayerPosition(int x, int y) {
@@ -34,6 +43,21 @@ void playerGraphicLoad(void) {
 }
 
 void playerLoop(int pressed, int held) {
+	if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
+		// Make the player fall
+		playerY += playerYfallSpeed;
+		fallDelay++;
+		if (fallDelay == 3) {
+			playerYfallSpeed++;
+			fallDelay = 0;
+		}
+		if (playerYfallSpeed > 16) playerYfallSpeed = 16;
+	}
+	if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
+		playerY--;
+		playerYfallSpeed = 1;
+	}
+
 	if (held & KEY_LEFT) {
 		playerDirection = false;
 		playerX -= 1;
@@ -42,16 +66,26 @@ void playerLoop(int pressed, int held) {
 		playerX += 1;
 	}
 	
+	if (playerDirection) {
+		if (mapLocation[(((playerY+24)/16)*mapHsize)+((playerX+8)/16)] == 17) {
+			playerX--;
+		}
+	} else {
+		if (mapLocation[(((playerY+24)/16)*mapHsize)+(playerX/16)] == 17) {
+			playerX++;
+		}
+	}
+
 	animateLegs = ((held & KEY_LEFT) || (held & KEY_RIGHT));
 }
 
 void renderPlayer(void) {
-	glBoxFilled(playerX+2, playerY+2, playerX+8, playerY+6, RGB15(0, 31, 0));		// Eye color
+	glBoxFilled((playerX+2)+cameraXpos, (playerY+2)+cameraYpos, (playerX+8)+cameraXpos, (playerY+6)+cameraYpos, RGB15(0, 31, 0));		// Eye color
 	glColor(RGB15(219/8, 172/8, 129/8));											// Head color
-	glSprite(playerX-3, playerY, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);						// Head
+	glSprite((playerX-3)+cameraXpos, (playerY)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);						// Head
 	glColor(RGB15(31, 31, 31));
-	glSprite(playerX-3, playerY+9, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);					// Torso
-	glSprite(playerX-3, playerY+17, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);	// Legs
+	glSprite((playerX-3)+cameraXpos, (playerY+9)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);					// Torso
+	glSprite((playerX-3)+cameraXpos, (playerY+17)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);	// Legs
 
 	if (animateLegs) {
 		legAniDelay++;

@@ -20,7 +20,7 @@ include $(DEVKITARM)/ds_rules
 TARGET		:=	Konotsu-Gunner
 BUILD		:=	build
 SOURCES		:=	source source/common source/graphics
-INCLUDES	:=	include
+INCLUDES	:=	include source/maps
 DATA		:=	../data  
 GRAPHICS	:=  ../gfx
 MUSIC       :=  ../music

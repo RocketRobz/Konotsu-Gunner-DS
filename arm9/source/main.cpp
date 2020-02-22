@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 	playerGraphicLoad();
 	fontInit();
 
-	setPlayerPosition(32, 146);
+	setPlayerPosition(128, 0);
 
 	while (1) {
 		clearText();

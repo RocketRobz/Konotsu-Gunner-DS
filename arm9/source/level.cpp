@@ -10,10 +10,18 @@
 #include "bottomImage.h"
 #include "tiles.h"
 
+#include "testmap.h"
+
 #define bgTile 11
 #define grayBlockTile 17
 
-static int floorXpos = 0;
+u8* mapLocation = (u8*)testMap;
+
+int mapHsize = 16;
+int mapVsize = 12;
+
+int cameraXpos = 0;
+int cameraYpos = 0;
 
 static int bottomTexID, tileTexID;
 static glImage bottomImage[(256 / 32) * (192 / 32)];
@@ -60,14 +68,16 @@ void levelMode(void) {
 }
 
 void levelGraphicDisplay(void) {
-	//glBoxFilled(0, 0, 256, 192, RGB15(255/8, 255/8, 255/8));
-	for (int x = 0; x < 256; x += 16) {
+	glBoxFilled(0, 0, 256, 192, RGB15(85/8, 85/8, 255/8));
+	/*for (int x = 0; x < 256; x += 16) {
 		for (int y = 0; y < 192; y += 16) {
 			glSprite(x, y, GL_FLIP_NONE, &tileImage[bgTile]);
 		}
-	}
-	for (int floorRenderCount = 0; floorRenderCount < 256; floorRenderCount += 16) {
-		glSprite(floorRenderCount+floorXpos, 176, GL_FLIP_NONE, &tileImage[grayBlockTile]);
+	}*/
+	for (int x = 0; x < mapHsize; x++) {
+		for (int y = 0; y < mapVsize; y++) {
+			glSprite((x*16)+cameraXpos, (y*16)+cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
+		}
 	}
 	renderPlayer();
 }
