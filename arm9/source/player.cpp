@@ -15,10 +15,12 @@ extern int mapVsize;
 extern int cameraXpos;
 extern int cameraYpos;
 
+static bool playerJump = false;
+static bool allowPlayerJump = false;
 static bool playerDirection = true;
 static bool animateLegs = false;
-static int fallDelay = 0;
-static int playerTexID, playerX, playerY, playerYfallSpeed=1, legAniFrame, legAniDelay;
+static bool yMoveDelay = false;
+static int playerTexID, playerX, playerY, playerYmoveSpeed=1, legAniFrame, legAniDelay;
 static glImage playerImage[(128 / 16) * (16 / 16)];
 
 void setPlayerPosition(int x, int y) {
@@ -43,19 +45,40 @@ void playerGraphicLoad(void) {
 }
 
 void playerLoop(int pressed, int held) {
-	if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
-		// Make the player fall
-		playerY += playerYfallSpeed;
-		fallDelay++;
-		if (fallDelay == 3) {
-			playerYfallSpeed++;
-			fallDelay = 0;
+	if (playerJump) {
+		allowPlayerJump = false;
+		if (mapLocation[((playerY/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
+			playerY++;
+			playerJump = false;
+			playerYmoveSpeed = 1;
 		}
-		if (playerYfallSpeed > 16) playerYfallSpeed = 16;
-	}
-	if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
-		playerY--;
-		playerYfallSpeed = 1;
+		if (mapLocation[((playerY/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
+			// Make the player jump
+			yMoveDelay = !yMoveDelay;
+			if (yMoveDelay) {
+				playerY -= playerYmoveSpeed;
+				playerYmoveSpeed--;
+			}
+			if (playerYmoveSpeed < 1) {
+				playerJump = false;
+				playerYmoveSpeed = 1;
+			}
+		}
+	} else {
+		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
+			// Make the player fall
+			yMoveDelay = !yMoveDelay;
+			if (yMoveDelay) {
+				playerY += playerYmoveSpeed;
+				playerYmoveSpeed++;
+			}
+			if (playerYmoveSpeed > 16) playerYmoveSpeed = 16;
+		}
+		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
+			playerY -= (playerY % 16);
+			playerYmoveSpeed = 1;
+			allowPlayerJump = true;
+		}
 	}
 
 	if (held & KEY_LEFT) {
@@ -64,6 +87,11 @@ void playerLoop(int pressed, int held) {
 	} else if (held & KEY_RIGHT) {
 		playerDirection = true;
 		playerX += 1;
+	}
+	
+	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
+		playerJump = true;
+		playerYmoveSpeed = 8;
 	}
 	
 	if (playerDirection) {
