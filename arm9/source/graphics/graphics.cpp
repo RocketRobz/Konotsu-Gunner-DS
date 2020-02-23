@@ -9,12 +9,17 @@
 #include "../level.h"
 
 extern bool fadeType;
+extern bool fadeColor;
 extern int screenMode;
 static int screenBrightness = 25;
 
 static bool renderingTop = true;
 static bool bothScreens = true;
 static bool singleScreenRendered = false;
+
+bool screenFadedIn(void) { return (screenBrightness == 0); }
+
+bool screenFadedOut(void) { return (screenBrightness > 24); }
 
 // Ported from PAlib (obsolete)
 static void SetBrightness(u8 screen, s8 bright) {
@@ -24,7 +29,8 @@ static void SetBrightness(u8 screen, s8 bright) {
 		mode = 2 << 14;
 		bright = -bright;
 	}
-	if (bright > 31) bright = 31;
+	if (bright > 31)
+		bright = 31;
 	*(u16*)(0x0400006C + (0x1000 * screen)) = bright + mode;
 }
 
@@ -101,8 +107,8 @@ static void vBlankHandler()
 		screenBrightness++;
 		if (screenBrightness > 25) screenBrightness = 25;
 	}
-	SetBrightness(0, screenBrightness);
-	SetBrightness(1, screenBrightness);
+	SetBrightness(0, fadeColor ? screenBrightness : -screenBrightness);
+	SetBrightness(1, fadeColor ? screenBrightness : -screenBrightness);
 
 	startRendering(renderingTop);
 	singleScreenRendered = false;

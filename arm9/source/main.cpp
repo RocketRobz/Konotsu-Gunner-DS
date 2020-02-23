@@ -21,6 +21,7 @@
 #include "soundbank_bin.h"
 
 bool fadeType = false;				// false = out, true = in
+bool fadeColor = true;
 int screenMode = 0;
 
 //mm_sound_effect mus_ALTIT;

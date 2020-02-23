@@ -19,6 +19,9 @@
 ------------------------------------------------------------------*/
 #pragma once
 
+bool screenFadedIn(void);
+bool screenFadedOut(void);
+
 bool isRenderingTop();
 bool isBothScreens();
 void graphicsInit();

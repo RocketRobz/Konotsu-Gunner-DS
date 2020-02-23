@@ -9,6 +9,7 @@
 #include "logo_rocketrobz.h"
 
 extern bool fadeType;
+extern bool fadeColor;
 extern int screenMode;
 
 static bool inited = false;
@@ -65,6 +66,9 @@ void logoScreen(void) {
 	}
 
 	if (waitTime == 60*3) {
+		fadeColor = false;
+		fadeType = false;
+		while (!screenFadedOut());
 		logoGraphicUnload();
 		screenMode = 1;
 	}
