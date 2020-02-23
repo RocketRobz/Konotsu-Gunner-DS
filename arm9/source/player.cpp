@@ -85,10 +85,10 @@ void playerLoop(int pressed, int held) {
 
 	if (held & KEY_LEFT) {
 		playerDirection = false;
-		playerX -= 2;
+		playerX -= 1;
 	} else if (held & KEY_RIGHT) {
 		playerDirection = true;
-		playerX += 2;
+		playerX += 1;
 	}
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
@@ -98,11 +98,11 @@ void playerLoop(int pressed, int held) {
 	
 	if (playerDirection) {
 		if (mapLocation[(((playerY+24)/16)*mapHsize)+((playerX+8)/16)] == 17) {
-			playerX -= 2;
+			playerX -= 1;
 		}
 	} else {
 		if (mapLocation[(((playerY+24)/16)*mapHsize)+(playerX/16)] == 17) {
-			playerX += 2;
+			playerX += 1;
 		}
 	}
 
