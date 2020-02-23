@@ -147,7 +147,7 @@ void renderPlayer(void) {
 
 	if (animateLegs) {
 		legAniDelay++;
-		if (legAniDelay==3) {
+		if (legAniDelay==2) {
 			legAniFrame++;
 			if (legAniFrame > 2) {
 				legAniFrame = 0;
@@ -156,6 +156,6 @@ void renderPlayer(void) {
 		}
 	} else {
 		legAniFrame = 0;
-		legAniDelay = 2;
+		legAniDelay = 1;
 	}
 }
