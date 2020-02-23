@@ -17,11 +17,13 @@
 
 u8* mapLocation = (u8*)testMap;
 
-int mapHsize = 16;
+int mapHsize = 32;
 int mapVsize = 12;
 
 int cameraXpos = 0;
 int cameraYpos = 0;
+
+extern int playerX, playerY;
 
 static int bottomTexID, tileTexID;
 static glImage bottomImage[(256 / 32) * (192 / 32)];
@@ -74,6 +76,11 @@ void levelGraphicDisplay(void) {
 			glSprite(x, y, GL_FLIP_NONE, &tileImage[bgTile]);
 		}
 	}*/
+	if (mapHsize>16 && playerX>128) {
+		cameraXpos = -playerX+128;
+	} else {
+		cameraXpos = 0;
+	}
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
 			glSprite((x*16)+cameraXpos, (y*16)+cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);

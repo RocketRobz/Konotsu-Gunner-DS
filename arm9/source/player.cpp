@@ -20,7 +20,9 @@ static bool allowPlayerJump = false;
 static bool playerDirection = true;
 static bool animateLegs = false;
 static bool yMoveDelay = false;
-static int playerTexID, playerX, playerY, playerYmoveSpeed=1, legAniFrame, legAniDelay;
+static int playerTexID;
+int playerX, playerY;
+static int playerYmoveSpeed=1, legAniFrame, legAniDelay;
 static glImage playerImage[(256 / 16) * (16 / 16)];
 
 void setPlayerPosition(int x, int y) {
