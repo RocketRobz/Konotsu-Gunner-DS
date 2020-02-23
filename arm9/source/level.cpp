@@ -86,25 +86,27 @@ void levelGraphicDisplay(void) {
 			glSprite(x, y, GL_FLIP_NONE, &tileImage[bgTile]);
 		}
 	}*/
-	if (mapHsize>16 && playerX>128) {
+	//if (mapHsize>16 && playerX>128) {
 		cameraXpos = playerX-128;
-		if (cameraXpos > (mapHsize*16)-256) {
+	/*	if (cameraXpos > (mapHsize*16)-256) {
 			cameraXpos = (mapHsize*16)-256;
 		}
 	} else {
 		cameraXpos = 0;
-	}
-	if (mapVsize>12 && playerY>192/2) {
+	}*/
+	//if (mapVsize>12 && playerY>192/2) {
 		cameraYpos = playerY-(192/2);
-		if (cameraYpos > (mapVsize*16)-192) {
+	/*	if (cameraYpos > (mapVsize*16)-192) {
 			cameraYpos = (mapVsize*16)-192;
 		}
 	} else {
 		cameraYpos = 0;
-	}
+	}*/
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
-			glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
+			if (mapLocation[(y*mapHsize)+x != 7) {
+				glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
+			}
 		}
 	}
 	renderPlayer();
