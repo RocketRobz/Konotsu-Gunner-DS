@@ -13,13 +13,15 @@
 
 #include "graphics/fontHandler.h"
 
+#include "logos.h"
 #include "player.h"
 #include "level.h"
 
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-bool fadeType = true;				// false = out, true = in
+bool fadeType = false;				// false = out, true = in
+int screenMode = 0;
 
 //mm_sound_effect mus_ALTIT;
 
@@ -72,14 +74,21 @@ int main(int argc, char **argv) {
 
 	InitSound();	
 	graphicsInit();
-	playerGraphicLoad();
 	fontInit();
 
 	setPlayerPosition(128, 0);
 
 	while (1) {
-		clearText();
-		levelMode();
+		//clearText();
+		switch (screenMode) {
+			case 0:
+			default:
+				logoScreen();
+				break;
+			case 1:
+				levelMode();
+				break;
+		}
 		swiWaitForVBlank();
 	}
 

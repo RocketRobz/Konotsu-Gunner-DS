@@ -5,9 +5,11 @@
 #include "graphics.h"
 #include "fontHandler.h"
 
+#include "../logos.h"
 #include "../level.h"
 
 extern bool fadeType;
+extern int screenMode;
 static int screenBrightness = 25;
 
 static bool renderingTop = true;
@@ -102,23 +104,35 @@ static void vBlankHandler()
 	SetBrightness(0, screenBrightness);
 	SetBrightness(1, screenBrightness);
 
-	if (bothScreens) {
-		startRendering(renderingTop);
-		singleScreenRendered = false;
-	} else if (!singleScreenRendered) {
-		startRendering(false);
-		singleScreenRendered = true;
-	}
+	startRendering(renderingTop);
+	singleScreenRendered = false;
+
 	glBegin2D();
 	{
-		if (!bothScreens || renderingTop)
+		if (renderingTop)
 		{
-			levelGraphicDisplay();
+			switch (screenMode) {
+				case 0:
+				default:
+					renderLogo(true);
+					break;
+				case 1:
+					levelGraphicDisplay();
+					break;
+			}
 			updateText(true);
 		}
 		else
 		{
-			levelGraphicBottomDisplay();
+			switch (screenMode) {
+				case 0:
+				default:
+					renderLogo(false);
+					break;
+				case 1:
+					levelGraphicBottomDisplay();
+					break;
+			}
 			updateText(false);
 		}
 		glColor(RGB15(31, 31, 31));

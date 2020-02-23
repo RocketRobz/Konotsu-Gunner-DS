@@ -15,6 +15,10 @@
 #define bgTile 11
 #define grayBlockTile 17
 
+extern bool fadeType;
+
+static bool inited = false;
+
 u8* mapLocation = (u8*)testMap;
 
 int mapHsize = 32;
@@ -62,6 +66,12 @@ void levelGraphicLoad(void) {
 }
 
 void levelMode(void) {
+	if (!inited) {
+		playerGraphicLoad();
+		inited = true;
+		fadeType = true;
+	}
+
 	scanKeys();
 	int pressed = keysDown();
 	int held = keysHeld();
