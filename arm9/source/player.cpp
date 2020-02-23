@@ -21,13 +21,20 @@ static bool playerDirection = true;
 static bool animateLegs = false;
 static bool yMoveDelay = false;
 static int playerTexID;
-int playerX, playerY;
+int playerX, playerY, playerStartX, playerStartY;
 static int playerYmoveSpeed=1, legAniFrame, legAniDelay;
 static glImage playerImage[(256 / 16) * (16 / 16)];
 
 void setPlayerPosition(int x, int y) {
-	playerX = x;
-	playerY = y;
+	playerStartX = x;
+	playerStartY = y;
+	playerX = playerStartX;
+	playerY = playerStartY;
+}
+
+void resetPlayerPosition(void) {
+	playerX = playerStartX;
+	playerY = playerStartY;
 }
 
 void playerGraphicLoad(void) {
@@ -80,6 +87,13 @@ void playerLoop(int pressed, int held) {
 			playerY -= (playerY % 16);
 			playerYmoveSpeed = 1;
 			allowPlayerJump = true;
+		}
+		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 22) {
+			// Player is killed
+			resetPlayerPosition();
+			playerYmoveSpeed = 1;
+			allowPlayerJump = false;
+			playerDirection = true;
 		}
 	}
 
