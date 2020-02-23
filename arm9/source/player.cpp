@@ -113,7 +113,7 @@ void playerLoop(int pressed, int held) {
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
 		playerJump = true;
-		playerYmoveSpeed = 12;
+		playerYmoveSpeed = 10;
 	}
 	
 	if (playerDirection) {
