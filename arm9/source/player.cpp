@@ -57,7 +57,8 @@ void playerLoop(int pressed, int held) {
 	if (playerJump) {
 		allowPlayerJump = false;
 		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 17)
-		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 17)) {
+		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 17)
+		|| playerY<0) {
 			playerY++;
 			playerJump = false;
 			playerYmoveSpeed = 1;
@@ -104,24 +105,24 @@ void playerLoop(int pressed, int held) {
 
 	if (held & KEY_LEFT) {
 		playerDirection = false;
-		playerX -= 1;
+		playerX -= 2;
 	} else if (held & KEY_RIGHT) {
 		playerDirection = true;
-		playerX += 1;
+		playerX += 2;
 	}
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
 		playerJump = true;
-		playerYmoveSpeed = 8;
+		playerYmoveSpeed = 12;
 	}
 	
 	if (playerDirection) {
 		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+8)/16)] == 17) {
-			playerX -= 1;
+			playerX -= 2;
 		}
 	} else {
 		if (mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17) {
-			playerX += 1;
+			playerX += 2;
 		}
 	}
 
