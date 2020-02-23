@@ -19,6 +19,7 @@ static bool playerJump = false;
 static bool allowPlayerJump = false;
 static bool playerDirection = true;
 static bool animateLegs = false;
+static bool moveMore = false;
 static bool yMoveDelay = false;
 static int playerTexID;
 int playerX, playerY, playerStartX, playerStartY;
@@ -104,11 +105,13 @@ void playerLoop(int pressed, int held) {
 	}
 
 	if (held & KEY_LEFT) {
+		moveMore = !moveMore;
 		playerDirection = false;
-		playerX -= 2;
+		playerX -= 1+moveMore;
 	} else if (held & KEY_RIGHT) {
+		moveMore = !moveMore;
 		playerDirection = true;
-		playerX += 2;
+		playerX += 1+moveMore;
 	}
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
@@ -118,11 +121,11 @@ void playerLoop(int pressed, int held) {
 	
 	if (playerDirection) {
 		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+8)/16)] == 17) {
-			playerX -= 2;
+			playerX -= 1+moveMore;
 		}
 	} else {
 		if (mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17) {
-			playerX += 2;
+			playerX += 1+moveMore;
 		}
 	}
 
