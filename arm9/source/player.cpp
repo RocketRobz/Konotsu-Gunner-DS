@@ -56,12 +56,14 @@ void playerGraphicLoad(void) {
 void playerLoop(int pressed, int held) {
 	if (playerJump) {
 		allowPlayerJump = false;
-		if (mapLocation[((playerY/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
+		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 17)
+		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 17)) {
 			playerY++;
 			playerJump = false;
 			playerYmoveSpeed = 1;
 		}
-		if (mapLocation[((playerY/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
+		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 7)
+		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 7)) {
 			// Make the player jump
 			yMoveDelay = !yMoveDelay;
 			if (yMoveDelay) {
@@ -74,7 +76,8 @@ void playerLoop(int pressed, int held) {
 			}
 		}
 	} else {
-		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 7) {
+		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 7)
+		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 7)) {
 			// Make the player fall
 			yMoveDelay = !yMoveDelay;
 			if (yMoveDelay) {
@@ -83,12 +86,14 @@ void playerLoop(int pressed, int held) {
 			}
 			if (playerYmoveSpeed > 16) playerYmoveSpeed = 16;
 		}
-		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 17) {
+		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17)
+		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 17)) {
 			playerY -= (playerY % 16);
 			playerYmoveSpeed = 1;
 			allowPlayerJump = true;
 		}
-		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerDirection ? playerX+8 : playerX)/16)] == 22) {
+		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 22)
+		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 22)) {
 			// Player is killed
 			resetPlayerPosition();
 			playerYmoveSpeed = 1;
@@ -111,11 +116,11 @@ void playerLoop(int pressed, int held) {
 	}
 	
 	if (playerDirection) {
-		if (mapLocation[(((playerY+24)/16)*mapHsize)+((playerX+8)/16)] == 17) {
+		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+8)/16)] == 17) {
 			playerX -= 1;
 		}
 	} else {
-		if (mapLocation[(((playerY+24)/16)*mapHsize)+(playerX/16)] == 17) {
+		if (mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17) {
 			playerX += 1;
 		}
 	}
