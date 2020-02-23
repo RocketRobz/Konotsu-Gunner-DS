@@ -130,16 +130,16 @@ void playerLoop(int pressed, int held) {
 }
 
 void renderPlayer(void) {
-	glBoxFilled((playerX+2)+cameraXpos, (playerY+6)+cameraYpos, (playerX+8)+cameraXpos, (playerY+8)+cameraYpos, RGB15(0, 31, 0));		// Eye color
+	glBoxFilled((playerX+2)-cameraXpos, (playerY+6)-cameraYpos, (playerX+8)-cameraXpos, (playerY+8)-cameraYpos, RGB15(0, 31, 0));		// Eye color
 	glColor(RGB15(219/8, 172/8, 129/8));											// Head color
-	glSprite((playerDirection ? playerX+1 : playerX-7)+cameraXpos, (playerY+5)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Back arm
-	glSprite((playerX-3)+cameraXpos, (playerY+2)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);						// Head
+	glSprite((playerDirection ? playerX+1 : playerX-7)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Back arm
+	glSprite((playerX-3)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);						// Head
 	glColor(RGB15(31, 31, 31));
-	glSprite((playerX-3)+cameraXpos, (playerY+11)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);					// Torso
-	glSprite((playerX-3)+cameraXpos, (playerY+19)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);	// Legs
-	glSprite((playerX-3)+cameraXpos, (playerY+19)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);	// Feet
+	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);					// Torso
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);	// Legs
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);	// Feet
 	glColor(RGB15(219/8, 172/8, 129/8));											// Arm color
-	glSprite((playerDirection ? playerX-4 : playerX-2)+cameraXpos, (playerY+5)+cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Front arm
+	glSprite((playerDirection ? playerX-4 : playerX-2)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Front arm
 	glColor(RGB15(31, 31, 31));
 
 	if (animateLegs) {

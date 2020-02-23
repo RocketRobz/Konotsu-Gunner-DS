@@ -22,7 +22,7 @@ static bool inited = false;
 u8* mapLocation = (u8*)testMap;
 
 int mapHsize = 32;
-int mapVsize = 12;
+int mapVsize = 24;
 
 int cameraXpos = 0;
 int cameraYpos = 0;
@@ -87,13 +87,24 @@ void levelGraphicDisplay(void) {
 		}
 	}*/
 	if (mapHsize>16 && playerX>128) {
-		cameraXpos = -playerX+128;
+		cameraXpos = playerX-128;
+		if (cameraXpos > (mapHsize*16)-256) {
+			cameraXpos = (mapHsize*16)-256;
+		}
 	} else {
 		cameraXpos = 0;
 	}
+	if (mapVsize>12 && playerY>192/2) {
+		cameraYpos = playerY-(192/2);
+		if (cameraYpos > (mapVsize*16)-192) {
+			cameraYpos = (mapVsize*16)-192;
+		}
+	} else {
+		cameraYpos = 0;
+	}
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
-			glSprite((x*16)+cameraXpos, (y*16)+cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
+			glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
 		}
 	}
 	renderPlayer();
