@@ -14,8 +14,6 @@ extern int screenMode;
 static int screenBrightness = 25;
 
 static bool renderingTop = true;
-static bool bothScreens = true;
-static bool singleScreenRendered = false;
 
 bool screenFadedIn(void) { return (screenBrightness == 0); }
 
@@ -94,10 +92,6 @@ bool isRenderingTop() {
 	return renderingTop;
 }
 
-bool isBothScreens() {
-	return bothScreens;
-}
-
 static void vBlankHandler()
 {
 	if(fadeType == true) {
@@ -111,7 +105,6 @@ static void vBlankHandler()
 	SetBrightness(1, fadeColor ? screenBrightness : -screenBrightness);
 
 	startRendering(renderingTop);
-	singleScreenRendered = false;
 
 	glBegin2D();
 	{
