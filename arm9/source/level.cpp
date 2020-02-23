@@ -104,7 +104,7 @@ void levelGraphicDisplay(void) {
 	}*/
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
-			if (mapLocation[(y*mapHsize)+x != 7) {
+			if (mapLocation[(y*mapHsize)+x] != 7) {
 				glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
 			}
 		}
