@@ -6,6 +6,7 @@
 #include "fontHandler.h"
 
 #include "../logos.h"
+#include "../mainmenu.h"
 #include "../level.h"
 
 extern bool fadeType;
@@ -116,6 +117,9 @@ static void vBlankHandler()
 					renderLogo(true);
 					break;
 				case 1:
+					renderMenuTop();
+					break;
+				case 2:
 					levelGraphicDisplay();
 					break;
 			}
@@ -129,6 +133,9 @@ static void vBlankHandler()
 					renderLogo(false);
 					break;
 				case 1:
+					renderMenuBottom();
+					break;
+				case 2:
 					levelGraphicBottomDisplay();
 					break;
 			}

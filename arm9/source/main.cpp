@@ -14,6 +14,7 @@
 #include "graphics/fontHandler.h"
 
 #include "logos.h"
+#include "mainmenu.h"
 #include "player.h"
 #include "level.h"
 
@@ -83,13 +84,16 @@ int main(int argc, char **argv) {
 	setPlayerPosition(128, 0);
 
 	while (1) {
-		//clearText();
+		clearText();
 		switch (screenMode) {
 			case 0:
 			default:
 				logoScreen();
 				break;
 			case 1:
+				menuScreen();
+				break;
+			case 2:
 				levelMode();
 				break;
 		}
