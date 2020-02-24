@@ -110,6 +110,10 @@ void bulletLoop(void) {
 			case 0:
 				bulletY -= 8;
 				break;
+			case 1:
+				(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
+				bulletY -= 8;
+				break;
 			case 2:
 				(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
 				break;
@@ -173,9 +177,19 @@ void playerLoop(int pressed, int held) {
 
 	if (pressed & KEY_TOUCH) {
 		if (touch.py >= 32 && touch.py < 64) {
+			if (touch.px >= 64 && touch.px < 96) {
+				// Aim up-left
+				playerDirection = false;
+				aimDir = 1;
+			}
 			if (touch.px >= 112 && touch.px < 144) {
 				// Aim up
 				aimDir = 0;
+			}
+			if (touch.px >= 160 && touch.px < 192) {
+				// Aim up-right
+				playerDirection = true;
+				aimDir = 1;
 			}
 		}
 		if (touch.py >= 64 && touch.py < 96) {
@@ -215,6 +229,10 @@ void playerLoop(int pressed, int held) {
 				bulletX = playerX+(playerDirection ? 1 : 5);
 				bulletY = playerY+9;
 				break;
+			case 1:
+				bulletX = playerX+(playerDirection ? 8 : -4);
+				bulletY = playerY+5;
+				break;
 			case 2:
 				bulletX = playerX+(playerDirection ? 8 : 0);
 				bulletY = playerY+9;
@@ -246,6 +264,8 @@ void renderPlayer(void) {
 	// Back pistol
 	if (aimDir==0) {
 		glSprite((playerDirection ? playerX+2 : playerX-8)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir==1) {
+		glSprite((playerDirection ? playerX+10 : playerX-18)-cameraXpos, (playerY)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
 	} else if (aimDir==2) {
 		glSprite((playerDirection ? playerX+11 : playerX-17)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
 	}
@@ -253,6 +273,8 @@ void renderPlayer(void) {
 	// Back arm
 	if (aimDir==0) {
 		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir==1) {
+		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
 	} else if (aimDir==2) {
 		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
 	}
@@ -271,6 +293,8 @@ void renderPlayer(void) {
 	// Front pistol
 	if (aimDir==0) {
 		glSprite((playerDirection ? playerX-3 : playerX-3)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir==1) {
+		glSprite((playerDirection ? playerX+4 : playerX-12)-cameraXpos, (playerY)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
 	} else if (aimDir==2) {
 		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
 	}
@@ -278,6 +302,8 @@ void renderPlayer(void) {
 	// Front arm
 	if (aimDir==0) {
 		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir==1) {
+		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
 	} else if (aimDir==2) {
 		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
 	}
