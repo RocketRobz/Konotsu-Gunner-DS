@@ -41,6 +41,9 @@ void InitSound() {
 
 	mmLoad(MOD_ALTIT);
 	mmSetModuleTempo(0x390);
+}
+
+void playMusic() {
 	mmStart(MOD_ALTIT, MM_PLAY_LOOP);
 }
 

@@ -16,6 +16,7 @@
 #define grayBlockTile 17
 
 extern bool fadeType;
+extern void playMusic();
 
 static bool inited = false;
 
@@ -68,8 +69,9 @@ void levelGraphicLoad(void) {
 void levelMode(void) {
 	if (!inited) {
 		playerGraphicLoad();
-		inited = true;
 		fadeType = true;
+		playMusic();
+		inited = true;
 	}
 
 	scanKeys();
