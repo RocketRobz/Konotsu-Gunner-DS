@@ -15,6 +15,13 @@ extern int mapVsize;
 extern int cameraXpos;
 extern int cameraYpos;
 
+static int eyeColor[3] = {0, 170, 0};
+static int hairColor[3] = {170, 85, 0};
+static int skinColor[3] = {255, 255, 85};
+static int torsoColor[3] = {255, 85, 85};
+static int legColor[3] = {170, 85, 0};
+static int feetColor[3] = {0, 0, 0};
+
 static bool playerJump = false;
 static bool allowPlayerJump = false;
 static bool playerDirection = true;
@@ -133,16 +140,22 @@ void playerLoop(int pressed, int held) {
 }
 
 void renderPlayer(void) {
-	glBoxFilled((playerX+2)-cameraXpos, (playerY+6)-cameraYpos, (playerX+8)-cameraXpos, (playerY+8)-cameraYpos, RGB15(0, 31, 0));		// Eye color
-	glColor(RGB15(219/8, 172/8, 129/8));											// Head color
-	glSprite((playerDirection ? playerX+1 : playerX-7)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Back arm
-	glSprite((playerX-3)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);						// Head
-	glColor(RGB15(31, 31, 31));
-	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);					// Torso
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);	// Legs
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);	// Feet
-	glColor(RGB15(219/8, 172/8, 129/8));											// Arm color
-	glSprite((playerDirection ? playerX-4 : playerX-2)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);					// Front arm
+	glBoxFilled((playerX+2)-cameraXpos, (playerY+6)-cameraYpos, (playerX+8)-cameraXpos, (playerY+8)-cameraYpos, RGB15(eyeColor[0]/8, eyeColor[1]/8, eyeColor[2]/8));	// Eye color
+	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Back arm/Head color
+	glSprite((playerDirection ? playerX+1 : playerX-7)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);		// Back arm
+	glSprite((playerX-3)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);									// Head
+	glColor(RGB15(hairColor[0]/8, hairColor[1]/8, hairColor[2]/8));																							// Back arm/Head color
+	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[9]);										// Hair 1
+	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[10]);										// Hair 1
+	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[11]);										// Hair 1
+	glColor(RGB15(torsoColor[0]/8, torsoColor[1]/8, torsoColor[2]/8));																						// Torso color
+	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);									// Torso
+	glColor(RGB15(legColor[0]/8, legColor[1]/8, legColor[2]/8));																								// Leg color
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);						// Legs
+	glColor(RGB15(feetColor[0]/8, feetColor[1]/8, feetColor[2]/8));																							// Feet color
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);						// Feet
+	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Front arm color
+	glSprite((playerDirection ? playerX-4 : playerX-2)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);		// Front arm
 	glColor(RGB15(31, 31, 31));
 
 	if (animateLegs) {
