@@ -27,16 +27,18 @@ static int feetColor[3] = {0, 0, 0};
 static bool playerJump = false;
 static bool allowPlayerJump = false;
 static bool playerDirection = true;
+static bool moveDirection = true;
 static bool animateLegs = false;
 static bool moveMore = false;
 static bool yMoveDelay = false;
 static int playerTexID, pistolTexID, bulletTexID;
 static glImage playerImage[(256 / 16) * (16 / 16)];
-static glImage pistolImage[16 * 8];
+static glImage pistolImage[(64 / 16) * (16 / 16)];
 static glImage bulletImage[8 * 8];
 
+static touchPosition touch;
 int playerX, playerY, playerStartX, playerStartY;
-static int bulletX, bulletY;
+static int bulletX, bulletY, aimDir=2, bulletDir=2;
 static bool bulletActive = false;
 static bool bulletDirection = false;
 
@@ -71,12 +73,12 @@ void playerGraphicLoad(void) {
 
 	pistolTexID = glLoadTileSet(pistolImage, // pointer to glImage array
 							16, // sprite width
-							8, // sprite height
-							16, // bitmap width
-							8, // bitmap height
+							16, // sprite height
+							64, // bitmap width
+							16, // bitmap height
 							GL_RGB16, // texture type for glTexImage2D() in videoGL.h
-							TEXTURE_SIZE_16, // sizeX for glTexImage2D() in videoGL.h
-							TEXTURE_SIZE_8, // sizeY for glTexImage2D() in videoGL.h
+							TEXTURE_SIZE_64, // sizeX for glTexImage2D() in videoGL.h
+							TEXTURE_SIZE_16, // sizeY for glTexImage2D() in videoGL.h
 							TEXGEN_OFF | GL_TEXTURE_COLOR0_TRANSPARENT, // param for glTexImage2D() in videoGL.h
 							4, // Length of the palette to use (3 colors)
 							(u16*) spr_pistolPal, // Load our 16 color tiles palette
@@ -104,13 +106,22 @@ void bulletLoop(void) {
 	if ((bulletX > 0) && (bulletX < mapHsize*16)
 	&& ((mapLocation[((bulletY/16)*mapHsize)+(bulletX/16)] == 7)
 	|| (mapLocation[((bulletY/16)*mapHsize)+((bulletX+4)/16)] == 7))) {
-		(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
+		switch (bulletDir) {
+			case 0:
+				bulletY -= 8;
+				break;
+			case 2:
+				(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
+				break;
+		}
 	} else {
 		bulletActive = false;
 	}
 }
 
 void playerLoop(int pressed, int held) {
+	touchRead(&touch);
+
 	if (playerJump) {
 		allowPlayerJump = false;
 		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 17)
@@ -160,13 +171,24 @@ void playerLoop(int pressed, int held) {
 		}
 	}
 
+	if (pressed & KEY_TOUCH) {
+		if (touch.py >= 32 && touch.py < 64) {
+			if (touch.px >= 112 && touch.px < 144) {
+				// Aim up
+				aimDir = 0;
+			}
+		}
+	}
+
 	if (held & KEY_LEFT) {
 		moveMore = !moveMore;
-		playerDirection = false;
+		moveDirection = false;
+		//playerDirection = false;
 		playerX -= 1+moveMore;
 	} else if (held & KEY_RIGHT) {
 		moveMore = !moveMore;
-		playerDirection = true;
+		moveDirection = true;
+		//playerDirection = true;
 		playerX += 1+moveMore;
 	}
 	
@@ -176,13 +198,22 @@ void playerLoop(int pressed, int held) {
 	}
 	
 	if ((pressed & KEY_R) && !bulletActive) {
-		bulletX = playerX+(playerDirection ? 8 : 0);
-		bulletY = playerY+9;
+		switch (aimDir) {
+			case 0:
+				bulletX = playerX+(playerDirection ? 1 : 5);
+				bulletY = playerY+9;
+				break;
+			case 2:
+				bulletX = playerX+(playerDirection ? 8 : 0);
+				bulletY = playerY+9;
+				break;
+		}
 		bulletDirection = playerDirection;
+		bulletDir = aimDir;
 		bulletActive = true;
 	}
 	
-	if (playerDirection) {
+	if (moveDirection) {
 		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+8)/16)] == 17) {
 			playerX -= 1+moveMore;
 		}
@@ -200,9 +231,19 @@ void playerLoop(int pressed, int held) {
 void renderPlayer(void) {
 	glBoxFilled((playerX+2)-cameraXpos, (playerY+6)-cameraYpos, (playerX+8)-cameraXpos, (playerY+8)-cameraYpos, RGB15(eyeColor[0]/8, eyeColor[1]/8, eyeColor[2]/8));	// Eye color
 	glColor(RGB15(31, 31, 31));																																// Back pistol color
-	glSprite((playerDirection ? playerX+11 : playerX-17)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, pistolImage);		// Back pistol
+	// Back pistol
+	if (aimDir==0) {
+		glSprite((playerDirection ? playerX+2 : playerX-8)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir==2) {
+		glSprite((playerDirection ? playerX+11 : playerX-17)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
+	}
 	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Back arm/Head color
-	glSprite((playerDirection ? playerX+1 : playerX-7)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);		// Back arm
+	// Back arm
+	if (aimDir==0) {
+		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir==2) {
+		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
+	}
 	glSprite((playerX-3)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);									// Head
 	glColor(RGB15(hairColor[0]/8, hairColor[1]/8, hairColor[2]/8));																							// Back arm/Head color
 	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[9]);									// Hair 1
@@ -215,9 +256,19 @@ void renderPlayer(void) {
 	glColor(RGB15(feetColor[0]/8, feetColor[1]/8, feetColor[2]/8));																							// Feet color
 	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);						// Feet
 	glColor(RGB15(31, 31, 31));																																// Front pistol color
-	glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, pistolImage);		// Front pistol
+	// Front pistol
+	if (aimDir==0) {
+		glSprite((playerDirection ? playerX-3 : playerX-3)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir==2) {
+		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
+	}
 	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Front arm color
-	glSprite((playerDirection ? playerX-4 : playerX-2)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);		// Front arm
+	// Front arm
+	if (aimDir==0) {
+		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir==2) {
+		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
+	}
 	glColor(RGB15(31, 31, 31));
 	if (bulletActive) {
 		glSprite(bulletX-cameraXpos, bulletY-cameraYpos, GL_FLIP_NONE, bulletImage);
