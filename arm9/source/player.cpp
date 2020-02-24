@@ -286,9 +286,9 @@ void renderPlayer(void) {
 	glColor(RGB15(torsoColor[0]/8, torsoColor[1]/8, torsoColor[2]/8));																						// Torso color
 	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);									// Torso
 	glColor(RGB15(legColor[0]/8, legColor[1]/8, legColor[2]/8));																								// Leg color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[2+legAniFrame]);						// Legs
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[allowPlayerJump ? 2+legAniFrame : 3]);// Legs
 	glColor(RGB15(feetColor[0]/8, feetColor[1]/8, feetColor[2]/8));																							// Feet color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[5+legAniFrame]);						// Feet
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[allowPlayerJump ? 5+legAniFrame : 6]);// Feet
 	glColor(RGB15(31, 31, 31));																																// Front pistol color
 	// Front pistol
 	if (aimDir==0) {
