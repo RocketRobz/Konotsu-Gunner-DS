@@ -178,6 +178,18 @@ void playerLoop(int pressed, int held) {
 				aimDir = 0;
 			}
 		}
+		if (touch.py >= 64 && touch.py < 96) {
+			if (touch.px >= 32 && touch.px < 64) {
+				// Aim left
+				playerDirection = false;
+				aimDir = 2;
+			}
+			if (touch.px >= 192 && touch.px < 224) {
+				// Aim right
+				playerDirection = true;
+				aimDir = 2;
+			}
+		}
 	}
 
 	if (held & KEY_LEFT) {

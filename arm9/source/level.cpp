@@ -155,4 +155,6 @@ void levelGraphicBottomDisplay(void) {
 	glSprite(64, 32, GL_FLIP_H, &aimButtonImage[1]);
 	glSprite(112, 32, GL_FLIP_NONE, &aimButtonImage[0]);
 	glSprite(160, 32, GL_FLIP_NONE, &aimButtonImage[1]);
+	glSprite(32, 64, GL_FLIP_H, &aimButtonImage[2]);
+	glSprite(192, 64, GL_FLIP_NONE, &aimButtonImage[2]);
 }
