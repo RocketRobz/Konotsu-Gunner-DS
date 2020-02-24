@@ -176,7 +176,7 @@ void playerLoop(int pressed, int held) {
 	}
 	
 	if ((pressed & KEY_R) && !bulletActive) {
-		bulletX = playerX;
+		bulletX = playerX+(playerDirection ? 8 : 0);
 		bulletY = playerY+9;
 		bulletDirection = playerDirection;
 		bulletActive = true;
