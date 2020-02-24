@@ -22,7 +22,7 @@ static int hairColor[3] = {170, 85, 0};
 static int skinColor[3] = {255, 255, 85};
 static int torsoColor[3] = {255, 85, 85};
 static int legColor[3] = {170, 85, 0};
-static int feetColor[3] = {0, 0, 0};
+static int feetColor[3] = {0, 0, 170};
 
 static bool playerJump = false;
 static bool allowPlayerJump = false;
