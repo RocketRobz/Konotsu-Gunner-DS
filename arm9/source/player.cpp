@@ -209,7 +209,7 @@ void playerLoop(int pressed, int held) {
 		playerYmoveSpeed = 10;
 	}
 	
-	if ((pressed & KEY_R) && !bulletActive) {
+	if ((pressed & KEY_L) && !bulletActive) {
 		switch (aimDir) {
 			case 0:
 				bulletX = playerX+(playerDirection ? 1 : 5);
