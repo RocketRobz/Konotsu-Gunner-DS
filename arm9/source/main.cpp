@@ -27,12 +27,14 @@ int screenMode = 0;
 
 static mm_sound_effect snd_GUNSHT;
 static mm_sound_effect snd_AMMOOUT;
+static mm_sound_effect snd_HURT;
 
 void InitSound() {
 	mmInitDefaultMem((mm_addr)soundbank_bin);
 	
 	mmLoadEffect( SFX_GUNSHT );
 	mmLoadEffect( SFX_AMMOOUT );
+	mmLoadEffect( SFX_HURT );
 
 	snd_GUNSHT = {
 		{ SFX_GUNSHT } ,			// id
@@ -50,7 +52,16 @@ void InitSound() {
 		128,	// panning
 	};
 
+	snd_HURT = {
+		{ SFX_HURT } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
+
 	mmLoad(MOD_ALTIT);
+	mmSetModuleVolume(500);
 	mmSetModuleTempo(0x390);
 }
 
@@ -64,6 +75,10 @@ void sndShoot() {
 
 void sndAmmoOut() {
 	mmEffectEx(&snd_AMMOOUT);
+}
+
+void sndHurt() {
+	mmEffectEx(&snd_HURT);
 }
 
 //---------------------------------------------------------------------------------

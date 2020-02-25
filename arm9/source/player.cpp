@@ -11,6 +11,7 @@
 
 extern void sndShoot();
 extern void sndAmmoOut();
+extern void sndHurt();
 
 extern u8* mapLocation;
 
@@ -172,6 +173,7 @@ void playerLoop(int pressed, int held) {
 		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 22)
 		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 22)) {
 			// Player is killed
+			sndHurt();
 			resetPlayerPosition();
 			playerYmoveSpeed = 1;
 			allowPlayerJump = false;
