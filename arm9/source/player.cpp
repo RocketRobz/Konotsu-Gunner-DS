@@ -30,6 +30,7 @@ static int feetColor[3] = {0, 0, 170};
 
 static bool playerJump = false;
 static bool allowPlayerJump = false;
+static bool jumpFallFrame = true;
 static bool playerDirection = true;
 static bool moveDirection = true;
 static bool animateLegs = false;
@@ -133,9 +134,11 @@ void playerLoop(int pressed, int held) {
 
 	if (playerJump) {
 		allowPlayerJump = false;
+		jumpFallFrame = true;
 		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 17)
 		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 17)
 		|| playerY<0) {
+			// Touched solid tile
 			playerY++;
 			playerJump = false;
 			playerYmoveSpeed = 1;
@@ -157,6 +160,7 @@ void playerLoop(int pressed, int held) {
 		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 7)
 		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 7)) {
 			// Make the player fall
+			jumpFallFrame = true;
 			yMoveDelay = !yMoveDelay;
 			if (yMoveDelay) {
 				playerY += playerYmoveSpeed;
@@ -166,9 +170,11 @@ void playerLoop(int pressed, int held) {
 		}
 		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17)
 		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 17)) {
+			// On solid tile
 			playerY -= (playerY % 16);
 			playerYmoveSpeed = 1;
 			allowPlayerJump = true;
+			jumpFallFrame = false;
 		}
 		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 22)
 		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 22)) {
@@ -293,9 +299,9 @@ void renderPlayer(void) {
 	glColor(RGB15(torsoColor[0]/8, torsoColor[1]/8, torsoColor[2]/8));																						// Torso color
 	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);									// Torso
 	glColor(RGB15(legColor[0]/8, legColor[1]/8, legColor[2]/8));																								// Leg color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[allowPlayerJump ? 2+legAniFrame : 3]);// Legs
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame ? 2+legAniFrame : 3]);	// Legs
 	glColor(RGB15(feetColor[0]/8, feetColor[1]/8, feetColor[2]/8));																							// Feet color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[allowPlayerJump ? 5+legAniFrame : 6]);// Feet
+	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame ? 5+legAniFrame : 6]);	// Feet
 	glColor(RGB15(31, 31, 31));																																// Front pistol color
 	// Front pistol
 	if (aimDir==0) {
