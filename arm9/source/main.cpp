@@ -62,7 +62,6 @@ void InitSound() {
 
 	mmLoad(MOD_ALTIT);
 	mmSetModuleVolume(500);
-	mmSetModuleTempo(0x390);
 }
 
 void playMusic() {
