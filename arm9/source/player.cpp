@@ -43,9 +43,10 @@ static glImage bulletImage[8 * 8];
 
 static touchPosition touch;
 int playerX, playerY, playerStartX, playerStartY;
-static int bulletX, bulletY, aimDir=2, bulletDir=2;
-static bool bulletActive = false;
-static bool bulletDirection = false;
+static int bulletX[2], bulletY[2], aimDir=2, bulletDir[2], shootDelay;
+static bool currentBullet = false;
+static bool bulletActive[2] = {false};
+static bool bulletDirection[2] = {false};
 
 static int playerYmoveSpeed=1, legAniFrame, legAniDelay;
 
@@ -106,26 +107,28 @@ void playerGraphicLoad(void) {
 }
 
 void bulletLoop(void) {
-	if (!bulletActive) return;
+	for (int i = 0; i < 2; i++) {
+		if (!bulletActive[i]) continue;
 
-	if ((bulletX > 0) && (bulletX < mapHsize*16)
-	&& ((mapLocation[((bulletY/16)*mapHsize)+(bulletX/16)] == 7)
-	|| (mapLocation[((bulletY/16)*mapHsize)+((bulletX+4)/16)] == 7))) {
-		switch (bulletDir) {
-			case 0:
-				bulletY -= 8;
-				break;
-			case 1:
-				(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
-				bulletY -= 8;
-				break;
-			case 2:
-				(bulletDirection ? (bulletX += 8) : (bulletX -= 8));
-				break;
+		if ((bulletX[i] > 0) && (bulletX[i] < mapHsize*16)
+		&& ((mapLocation[((bulletY[i]/16)*mapHsize)+(bulletX[i]/16)] == 7)
+		|| (mapLocation[((bulletY[i]/16)*mapHsize)+((bulletX[i]+4)/16)] == 7))) {
+			switch (bulletDir[i]) {
+				case 0:
+					bulletY[i] -= 8;
+					break;
+				case 1:
+					(bulletDirection[i] ? (bulletX[i] += 8) : (bulletX[i] -= 8));
+					bulletY[i] -= 8;
+					break;
+				case 2:
+					(bulletDirection[i] ? (bulletX[i] += 8) : (bulletX[i] -= 8));
+					break;
+			}
+		} else {
+			sndAmmoOut();
+			bulletActive[i] = false;
 		}
-	} else {
-		sndAmmoOut();
-		bulletActive = false;
 	}
 }
 
@@ -160,7 +163,9 @@ void playerLoop(int pressed, int held) {
 		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 7)
 		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 7)) {
 			// Make the player fall
-			jumpFallFrame = true;
+			if (playerYmoveSpeed == 2) {
+				jumpFallFrame = true;
+			}
 			yMoveDelay = !yMoveDelay;
 			if (yMoveDelay) {
 				playerY += playerYmoveSpeed;
@@ -235,25 +240,32 @@ void playerLoop(int pressed, int held) {
 		playerYmoveSpeed = 10;
 	}
 	
-	if ((pressed & KEY_L) && !bulletActive) {
-		switch (aimDir) {
-			case 0:
-				bulletX = playerX+(playerDirection ? 1 : 5);
-				bulletY = playerY+9;
-				break;
-			case 1:
-				bulletX = playerX+(playerDirection ? 8 : -4);
-				bulletY = playerY+5;
-				break;
-			case 2:
-				bulletX = playerX+(playerDirection ? 8 : 0);
-				bulletY = playerY+9;
-				break;
+	if ((held & KEY_L) && !bulletActive[currentBullet]) {
+		shootDelay++;
+		if (shootDelay==6*2) {
+			switch (aimDir) {
+				case 0:
+					bulletX[currentBullet] = playerX+(playerDirection ? 1 : 5);
+					bulletY[currentBullet] = playerY+9;
+					break;
+				case 1:
+					bulletX[currentBullet] = playerX+(playerDirection ? 8 : -4);
+					bulletY[currentBullet] = playerY+5;
+					break;
+				case 2:
+					bulletX[currentBullet] = playerX+(playerDirection ? 8 : 0);
+					bulletY[currentBullet] = playerY+9;
+					break;
+			}
+			bulletDirection[currentBullet] = playerDirection;
+			bulletDir[currentBullet] = aimDir;
+			sndShoot();
+			bulletActive[currentBullet] = true;
+			currentBullet = !currentBullet;
+			shootDelay = 0;
 		}
-		bulletDirection = playerDirection;
-		bulletDir = aimDir;
-		sndShoot();
-		bulletActive = true;
+	} else {
+		shootDelay = 5*2;
 	}
 	
 	if (moveDirection) {
@@ -321,8 +333,10 @@ void renderPlayer(void) {
 		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
 	}
 	glColor(RGB15(31, 31, 31));
-	if (bulletActive) {
-		glSprite(bulletX-cameraXpos, bulletY-cameraYpos, GL_FLIP_NONE, bulletImage);
+	for (int i = 0; i < 2; i++) {
+		if (bulletActive[i]) {
+			glSprite(bulletX[i]-cameraXpos, bulletY[i]-cameraYpos, GL_FLIP_NONE, bulletImage);
+		}
 	}
 
 	if (animateLegs) {
