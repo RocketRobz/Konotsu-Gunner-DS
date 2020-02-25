@@ -192,7 +192,7 @@ void playerLoop(int pressed, int held) {
 		}
 	}
 
-	if (pressed & KEY_TOUCH) {
+	if (held & KEY_TOUCH) {
 		if (touch.py >= 32 && touch.py < 64) {
 			if (touch.px >= 64 && touch.px < 96) {
 				// Aim up-left
