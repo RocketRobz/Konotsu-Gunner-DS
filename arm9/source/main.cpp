@@ -25,20 +25,30 @@ bool fadeType = false;				// false = out, true = in
 bool fadeColor = true;
 int screenMode = 0;
 
-//mm_sound_effect mus_ALTIT;
+static mm_sound_effect snd_GUNSHT;
+static mm_sound_effect snd_AMMOOUT;
 
 void InitSound() {
 	mmInitDefaultMem((mm_addr)soundbank_bin);
 	
-	/*mmLoadEffect( MOD_ALTIT );
+	mmLoadEffect( SFX_GUNSHT );
+	mmLoadEffect( SFX_AMMOOUT );
 
-	mus_ALTIT = {
-		{ MOD_ALTIT } ,			// id
+	snd_GUNSHT = {
+		{ SFX_GUNSHT } ,			// id
 		(int)(1.0f * (1<<10)),	// rate
 		0,		// handle
 		255,	// volume
 		128,	// panning
-	};*/
+	};
+
+	snd_AMMOOUT = {
+		{ SFX_AMMOOUT } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
 
 	mmLoad(MOD_ALTIT);
 	mmSetModuleTempo(0x390);
@@ -46,6 +56,14 @@ void InitSound() {
 
 void playMusic() {
 	mmStart(MOD_ALTIT, MM_PLAY_LOOP);
+}
+
+void sndShoot() {
+	mmEffectEx(&snd_GUNSHT);
+}
+
+void sndAmmoOut() {
+	mmEffectEx(&snd_AMMOOUT);
 }
 
 //---------------------------------------------------------------------------------

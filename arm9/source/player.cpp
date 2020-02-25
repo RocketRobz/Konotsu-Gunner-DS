@@ -9,6 +9,9 @@
 #include "spr_pistol.h"
 #include "spr_bullet.h"
 
+extern void sndShoot();
+extern void sndAmmoOut();
+
 extern u8* mapLocation;
 
 extern int mapHsize;
@@ -119,6 +122,7 @@ void bulletLoop(void) {
 				break;
 		}
 	} else {
+		sndAmmoOut();
 		bulletActive = false;
 	}
 }
@@ -240,6 +244,7 @@ void playerLoop(int pressed, int held) {
 		}
 		bulletDirection = playerDirection;
 		bulletDir = aimDir;
+		sndShoot();
 		bulletActive = true;
 	}
 	
