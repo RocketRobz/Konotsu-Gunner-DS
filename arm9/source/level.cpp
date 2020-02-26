@@ -29,7 +29,7 @@ int mapVsize = 24;
 int cameraXpos = 0;
 int cameraYpos = 0;
 
-extern int playerX, playerY;
+extern int playerX[2], playerY[2];
 
 static int bottomTexID, aimTexID, tileTexID;
 static glImage bottomImage[(256 / 32) * (192 / 32)];
@@ -103,7 +103,7 @@ void levelGraphicDisplay(void) {
 		}
 	}*/
 	//if (mapHsize>16 && playerX>128) {
-		cameraXpos = playerX-128;
+		cameraXpos = playerX[0]-128;
 	/*	if (cameraXpos > (mapHsize*16)-256) {
 			cameraXpos = (mapHsize*16)-256;
 		}
@@ -111,7 +111,7 @@ void levelGraphicDisplay(void) {
 		cameraXpos = 0;
 	}*/
 	//if (mapVsize>12 && playerY>192/2) {
-		cameraYpos = playerY-(192/2);
+		cameraYpos = playerY[0]-(192/2);
 	/*	if (cameraYpos > (mapVsize*16)-192) {
 			cameraYpos = (mapVsize*16)-192;
 		}

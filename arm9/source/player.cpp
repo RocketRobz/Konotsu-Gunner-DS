@@ -30,14 +30,15 @@ static int torsoColor[3] = {255, 85, 85};
 static int legColor[3] = {170, 85, 0};
 static int feetColor[3] = {0, 0, 170};
 
-static bool playerJump = false;
-static bool allowPlayerJump = false;
-static bool jumpFallFrame = true;
-static bool playerDirection = true;
-static bool moveDirection = true;
-static bool animateLegs = false;
-static bool moveMore = false;
-static bool yMoveDelay = false;
+static int currentChars = 2;
+static bool playerJump[2] = {false};
+static bool allowPlayerJump[2] = {false};
+static bool jumpFallFrame[2] = {true};
+static bool playerDirection[2] = {true};
+static bool moveDirection[2] = {true};
+static bool animateLegs[2] = {false};
+static bool moveMore[2] = {false};
+static bool yMoveDelay[2] = {false};
 static int hudTexID, crateTexID, playerTexID, pistolTexID, bulletTexID;
 static glImage hudImage[64 * 32];
 static glImage ammoCrateImage[16 * 16];
@@ -46,25 +47,41 @@ static glImage pistolImage[(64 / 16) * (16 / 16)];
 static glImage bulletImage[8 * 8];
 
 static touchPosition touch;
-int playerX, playerY, playerStartX, playerStartY;
-static int bulletX[2], bulletY[2], aimDir=2, bulletDir[2], shootDelay;
+int playerX[2], playerY[2], playerStartX[2], playerStartY[2];
+static int bulletX[2], bulletY[2], aimDir[2]={2}, bulletDir[2], shootDelay[2];
 static bool currentBullet = false;
 static bool bulletActive[2] = {false};
 static bool bulletDirection[2] = {false};
 
-static int health=100, ammoCount=999, playerYmoveSpeed=1, legAniFrame, legAniDelay;
+static int health=100, ammoCount=999, playerYmoveSpeed[2]={1}, legAniFrame[2], legAniDelay[2];
 static char healthText[8], ammoText[8];
 
-void setPlayerPosition(int x, int y) {
-	playerStartX = x;
-	playerStartY = y;
-	playerX = playerStartX;
-	playerY = playerStartY;
+void initPlayers(int numberOfChars) {
+	currentChars = numberOfChars;
+	for (int i = 0; i < currentChars; i++) {
+		playerJump[i] = false;
+		allowPlayerJump[i] = false;
+		jumpFallFrame[i] = true;
+		playerDirection[i] = true;
+		moveDirection[i] = true;
+		animateLegs[i] = false;
+		moveMore[i] = false;
+		yMoveDelay[i] = false;
+		aimDir[i] = 2;
+		shootDelay[i] = 0;
+	}
 }
 
-void resetPlayerPosition(void) {
-	playerX = playerStartX;
-	playerY = playerStartY;
+void setPlayerPosition(int id, int x, int y) {
+	playerStartX[id] = x;
+	playerStartY[id] = y;
+	playerX[id] = playerStartX[id];
+	playerY[id] = playerStartY[id];
+}
+
+void resetPlayerPosition(int id) {
+	playerX[id] = playerStartX[id];
+	playerY[id] = playerStartY[id];
 }
 
 void playerGraphicLoad(void) {
@@ -177,231 +194,237 @@ void playerLoop(int pressed, int held) {
 
 	touchRead(&touch);
 
-	if (playerJump) {
-		allowPlayerJump = false;
-		jumpFallFrame = true;
-		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 17)
-		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 17)
-		|| playerY<0) {
+  for (int i = 0; i < currentChars; i++) {
+	if (playerJump[i]) {
+		allowPlayerJump[i] = false;
+		jumpFallFrame[i] = true;
+		if ((mapLocation[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 17)
+		|| (mapLocation[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 17)
+		|| playerY[i]<0) {
 			// Touched solid tile
-			playerY++;
-			playerJump = false;
-			playerYmoveSpeed = 1;
+			playerY[i]++;
+			playerJump[i] = false;
+			playerYmoveSpeed[i] = 1;
 		}
-		if ((mapLocation[((playerY/16)*mapHsize)+(playerX/16)] == 7)
-		|| (mapLocation[((playerY/16)*mapHsize)+((playerX+4)/16)] == 7)) {
+		if ((mapLocation[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 7)
+		|| (mapLocation[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
 			// Make the player jump
-			yMoveDelay = !yMoveDelay;
-			if (yMoveDelay) {
-				playerY -= playerYmoveSpeed;
-				playerYmoveSpeed--;
+			yMoveDelay[i] = !yMoveDelay[i];
+			if (yMoveDelay[i]) {
+				playerY[i] -= playerYmoveSpeed[i];
+				playerYmoveSpeed[i]--;
 			}
-			if (playerYmoveSpeed < 1) {
-				playerJump = false;
-				playerYmoveSpeed = 1;
+			if (playerYmoveSpeed[i] < 1) {
+				playerJump[i] = false;
+				playerYmoveSpeed[i] = 1;
 			}
 		}
 	} else {
-		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 7)
-		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 7)) {
+		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 7)
+		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
 			// Make the player fall
-			if (playerYmoveSpeed == 2) {
-				jumpFallFrame = true;
+			if (playerYmoveSpeed[i] == 2) {
+				jumpFallFrame[i] = true;
 			}
-			yMoveDelay = !yMoveDelay;
-			if (yMoveDelay) {
-				playerY += playerYmoveSpeed;
-				playerYmoveSpeed++;
+			yMoveDelay[i] = !yMoveDelay[i];
+			if (yMoveDelay[i]) {
+				playerY[i] += playerYmoveSpeed[i];
+				playerYmoveSpeed[i]++;
 			}
-			if (playerYmoveSpeed > 16) playerYmoveSpeed = 16;
+			if (playerYmoveSpeed[i] > 16) playerYmoveSpeed[i] = 16;
 		}
-		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17)
-		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 17)) {
+		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17)
+		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 17)) {
 			// On solid tile
-			playerY -= (playerY % 16);
-			playerYmoveSpeed = 1;
-			allowPlayerJump = true;
-			jumpFallFrame = false;
+			playerY[i] -= (playerY[i] % 16);
+			playerYmoveSpeed[i] = 1;
+			allowPlayerJump[i] = true;
+			jumpFallFrame[i] = false;
 		}
-		if ((mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 22)
-		|| (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+4)/16)] == 22)) {
+		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 22)
+		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 22)) {
 			// Player is killed
 			sndHurt();
-			resetPlayerPosition();
-			playerYmoveSpeed = 1;
-			allowPlayerJump = false;
-			playerDirection = true;
+			resetPlayerPosition(i);
+			playerYmoveSpeed[i] = 1;
+			allowPlayerJump[i] = false;
+			playerDirection[i] = true;
 		}
 	}
+  }
 
 	if (held & KEY_TOUCH) {
 		if (touch.py >= 48 && touch.py < 80) {
 			if (touch.px >= 80 && touch.px < 112) {
 				// Aim up-left
-				playerDirection = false;
-				aimDir = 1;
+				playerDirection[0] = false;
+				aimDir[0] = 1;
 			}
 			if (touch.px >= 112 && touch.px < 144) {
 				// Aim up
-				aimDir = 0;
+				aimDir[0] = 0;
 			}
 			if (touch.px >= 144 && touch.px < 186) {
 				// Aim up-right
-				playerDirection = true;
-				aimDir = 1;
+				playerDirection[0] = true;
+				aimDir[0] = 1;
 			}
 		}
 		if (touch.py >= 80 && touch.py < 112) {
 			if (touch.px >= 80 && touch.px < 112) {
 				// Aim left
-				playerDirection = false;
-				aimDir = 2;
+				playerDirection[0] = false;
+				aimDir[0] = 2;
 			}
 			if (touch.px >= 144 && touch.px < 186) {
 				// Aim right
-				playerDirection = true;
-				aimDir = 2;
+				playerDirection[0] = true;
+				aimDir[0] = 2;
 			}
 		}
 		if (touch.py >= 112 && touch.py < 144) {
 			if (touch.px >= 80 && touch.px < 112) {
 				// Aim down-left
-				playerDirection = false;
-				aimDir = 3;
+				playerDirection[0] = false;
+				aimDir[0] = 3;
 			}
 			if (touch.px >= 144 && touch.px < 186) {
 				// Aim down-right
-				playerDirection = true;
-				aimDir = 3;
+				playerDirection[0] = true;
+				aimDir[0] = 3;
 			}
 		}
 	}
 
 	if (held & KEY_LEFT) {
-		moveMore = !moveMore;
-		moveDirection = false;
-		//playerDirection = false;
-		playerX -= 1+moveMore;
+		moveMore[0] = !moveMore[0];
+		moveDirection[0] = false;
+		//playerDirection[0] = false;
+		playerX[0] -= 1+moveMore[0];
 	} else if (held & KEY_RIGHT) {
-		moveMore = !moveMore;
-		moveDirection = true;
+		moveMore[0] = !moveMore[0];
+		moveDirection[0] = true;
 		//playerDirection = true;
-		playerX += 1+moveMore;
+		playerX[0] += 1+moveMore[0];
 	}
 	
-	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump) {
-		playerJump = true;
-		playerYmoveSpeed = 10;
+	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump[0]) {
+		playerJump[0] = true;
+		playerYmoveSpeed[0] = 10;
 	}
 	
 	if ((held & KEY_L) && !bulletActive[currentBullet]) {
-		shootDelay++;
-		if (ammoCount > 0 && shootDelay==6*2) {
-			switch (aimDir) {
+		shootDelay[0]++;
+		if (ammoCount > 0 && shootDelay[0]==6*2) {
+			switch (aimDir[0]) {
 				case 0:
-					bulletX[currentBullet] = playerX+(playerDirection ? 1 : 5);
-					bulletY[currentBullet] = playerY+9;
+					bulletX[currentBullet] = playerX[0]+(playerDirection[0] ? 1 : 5);
+					bulletY[currentBullet] = playerY[0]+9;
 					break;
 				case 1:
-					bulletX[currentBullet] = playerX+(playerDirection ? 8 : -4);
-					bulletY[currentBullet] = playerY+5;
+					bulletX[currentBullet] = playerX[0]+(playerDirection[0] ? 8 : -4);
+					bulletY[currentBullet] = playerY[0]+5;
 					break;
 				case 2:
-					bulletX[currentBullet] = playerX+(playerDirection ? 8 : 0);
-					bulletY[currentBullet] = playerY+9;
+					bulletX[currentBullet] = playerX[0]+(playerDirection[0] ? 8 : 0);
+					bulletY[currentBullet] = playerY[0]+9;
 					break;
 				case 3:
-					bulletX[currentBullet] = playerX+(playerDirection ? 8 : -4);
-					bulletY[currentBullet] = playerY+14;
+					bulletX[currentBullet] = playerX[0]+(playerDirection[0] ? 8 : -4);
+					bulletY[currentBullet] = playerY[0]+14;
 					break;
 			}
-			bulletDirection[currentBullet] = playerDirection;
-			bulletDir[currentBullet] = aimDir;
+			bulletDirection[currentBullet] = playerDirection[0];
+			bulletDir[currentBullet] = aimDir[0];
 			sndShoot();
 			ammoCount--;
 			bulletActive[currentBullet] = true;
 			currentBullet = !currentBullet;
-			shootDelay = 0;
-		} else if (ammoCount == 0 && shootDelay==6*2) {
+			shootDelay[0] = 0;
+		} else if (ammoCount == 0 && shootDelay[0]==6*2) {
 			ammoCount = 999;	// Reload ammo
 		}
 	} else {
-		shootDelay = 5*2;
+		shootDelay[0] = 5*2;
 	}
 	
-	if (moveDirection) {
-		if (mapLocation[(((playerY+31)/16)*mapHsize)+((playerX+8)/16)] == 17) {
-			playerX -= 1+moveMore;
+  for (int i = 0; i < currentChars; i++) {
+	if (moveDirection[i]) {
+		if (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+8)/16)] == 17) {
+			playerX[i] -= 1+moveMore[i];
 		}
 	} else {
-		if (mapLocation[(((playerY+31)/16)*mapHsize)+(playerX/16)] == 17) {
-			playerX += 1+moveMore;
+		if (mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17) {
+			playerX[i] += 1+moveMore[i];
 		}
 	}
+  }
 
-	animateLegs = ((held & KEY_LEFT) || (held & KEY_RIGHT));
+	animateLegs[0] = ((held & KEY_LEFT) || (held & KEY_RIGHT));
 
 	bulletLoop();
 }
 
 void renderPlayer(void) {
-	glBoxFilled((playerX+2)-cameraXpos, (playerY+6)-cameraYpos, (playerX+8)-cameraXpos, (playerY+8)-cameraYpos, RGB15(eyeColor[0]/8, eyeColor[1]/8, eyeColor[2]/8));	// Eye color
+  for (int i = 0; i < currentChars; i++) {
+	glBoxFilled((playerX[i]+2)-cameraXpos, (playerY[i]+6)-cameraYpos, (playerX[i]+8)-cameraXpos, (playerY[i]+8)-cameraYpos, RGB15(eyeColor[0]/8, eyeColor[1]/8, eyeColor[2]/8));	// Eye color
 	glColor(RGB15(31, 31, 31));																																// Back pistol color
 	// Back pistol
-	if (aimDir==0) {
-		glSprite((playerDirection ? playerX+2 : playerX-8)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
-	} else if (aimDir==1) {
-		glSprite((playerDirection ? playerX+10 : playerX-18)-cameraXpos, (playerY)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
-	} else if (aimDir==2) {
-		glSprite((playerDirection ? playerX+11 : playerX-17)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
-	} else if (aimDir==3) {
-		glSprite((playerDirection ? playerX+10 : playerX-18)-cameraXpos, (playerY+13)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[3]);
+	if (aimDir[i]==0) {
+		glSprite((playerDirection[i] ? playerX[i]+2 : playerX[i]-8)-cameraXpos, (playerY[i]-3)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir[i]==1) {
+		glSprite((playerDirection[i] ? playerX[i]+10 : playerX[i]-18)-cameraXpos, (playerY[i])-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
+	} else if (aimDir[i]==2) {
+		glSprite((playerDirection[i] ? playerX[i]+11 : playerX[i]-17)-cameraXpos, (playerY[i]+9)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
+	} else if (aimDir[i]==3) {
+		glSprite((playerDirection[i] ? playerX[i]+10 : playerX[i]-18)-cameraXpos, (playerY[i]+13)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[3]);
 	}
 	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Back arm/Head color
 	// Back arm
-	if (aimDir==0) {
-		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
-	} else if (aimDir==1) {
-		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
-	} else if (aimDir==2) {
-		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
-	} else if (aimDir==3) {
-		glSprite((playerDirection ? playerX+4 : playerX-10)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[14]);
+	if (aimDir[i]==0) {
+		glSprite((playerDirection[i] ? playerX[i]+5 : playerX[i]-11)-cameraXpos, (playerY[i]+2)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir[i]==1) {
+		glSprite((playerDirection[i] ? playerX[i]+4 : playerX[i]-10)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
+	} else if (aimDir[i]==2) {
+		glSprite((playerDirection[i] ? playerX[i]+4 : playerX[i]-10)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
+	} else if (aimDir[i]==3) {
+		glSprite((playerDirection[i] ? playerX[i]+4 : playerX[i]-10)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[14]);
 	}
-	glSprite((playerX-3)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);									// Head
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]+2)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[0]);									// Head
 	glColor(RGB15(hairColor[0]/8, hairColor[1]/8, hairColor[2]/8));																							// Back arm/Head color
-	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[9]);									// Hair 1
-	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[10]);									// Hair 2
-	glSprite((playerX-3)-cameraXpos, (playerY-1)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[11]);									// Hair 3
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]-1)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[9]);									// Hair 1
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]-1)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[10]);									// Hair 2
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]-1)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[11]);									// Hair 3
 	glColor(RGB15(torsoColor[0]/8, torsoColor[1]/8, torsoColor[2]/8));																						// Torso color
-	glSprite((playerX-3)-cameraXpos, (playerY+11)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);									// Torso
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]+11)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[1]);									// Torso
 	glColor(RGB15(legColor[0]/8, legColor[1]/8, legColor[2]/8));																								// Leg color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame ? 2+legAniFrame : 3]);	// Legs
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]+19)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame[i] ? 2+legAniFrame[i] : 3]);	// Legs
 	glColor(RGB15(feetColor[0]/8, feetColor[1]/8, feetColor[2]/8));																							// Feet color
-	glSprite((playerX-3)-cameraXpos, (playerY+19)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame ? 5+legAniFrame : 6]);	// Feet
+	glSprite((playerX[i]-3)-cameraXpos, (playerY[i]+19)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[!jumpFallFrame[i] ? 5+legAniFrame[i] : 6]);	// Feet
 	glColor(RGB15(31, 31, 31));																																// Front pistol color
 	// Front pistol
-	if (aimDir==0) {
-		glSprite((playerDirection ? playerX-3 : playerX-3)-cameraXpos, (playerY-3)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
-	} else if (aimDir==1) {
-		glSprite((playerDirection ? playerX+4 : playerX-12)-cameraXpos, (playerY)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
-	} else if (aimDir==2) {
-		glSprite((playerDirection ? playerX+5 : playerX-11)-cameraXpos, (playerY+9)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
-	} else if (aimDir==3) {
-		glSprite((playerDirection ? playerX+4 : playerX-12)-cameraXpos, (playerY+13)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[3]);
+	if (aimDir[i]==0) {
+		glSprite((playerDirection[i] ? playerX[i]-3 : playerX[i]-3)-cameraXpos, (playerY[i]-3)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[2]);
+	} else if (aimDir[i]==1) {
+		glSprite((playerDirection[i] ? playerX[i]+4 : playerX[i]-12)-cameraXpos, (playerY[i])-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[1]);
+	} else if (aimDir[i]==2) {
+		glSprite((playerDirection[i] ? playerX[i]+5 : playerX[i]-11)-cameraXpos, (playerY[i]+9)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[0]);
+	} else if (aimDir[i]==3) {
+		glSprite((playerDirection[i] ? playerX[i]+4 : playerX[i]-12)-cameraXpos, (playerY[i]+13)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &pistolImage[3]);
 	}
 	glColor(RGB15(skinColor[0]/8, skinColor[1]/8, skinColor[2]/8));																							// Front arm color
 	// Front arm
-	if (aimDir==0) {
-		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+2)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
-	} else if (aimDir==1) {
-		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
-	} else if (aimDir==2) {
-		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
-	} else if (aimDir==3) {
-		glSprite((playerDirection ? playerX-1 : playerX-5)-cameraXpos, (playerY+5)-cameraYpos, playerDirection ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[14]);
+	if (aimDir[i]==0) {
+		glSprite((playerDirection[i] ? playerX[i]-1 : playerX[i]-5)-cameraXpos, (playerY[i]+2)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[13]);
+	} else if (aimDir[i]==1) {
+		glSprite((playerDirection[i] ? playerX[i]-1 : playerX[i]-5)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[12]);
+	} else if (aimDir[i]==2) {
+		glSprite((playerDirection[i] ? playerX[i]-1 : playerX[i]-5)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[8]);
+	} else if (aimDir[i]==3) {
+		glSprite((playerDirection[i] ? playerX[i]-1 : playerX[i]-5)-cameraXpos, (playerY[i]+5)-cameraYpos, playerDirection[i] ? GL_FLIP_NONE : GL_FLIP_H, &playerImage[14]);
 	}
 	glColor(RGB15(31, 31, 31));
+  }
 	for (int i = 0; i < 2; i++) {
 		if (bulletActive[i]) {
 			glSprite(bulletX[i]-cameraXpos, bulletY[i]-cameraYpos, GL_FLIP_NONE, bulletImage);
@@ -414,17 +437,19 @@ void renderPlayer(void) {
 	}
 	glSprite(0, 8, GL_FLIP_NONE, hudImage);
 
-	if (animateLegs) {
-		legAniDelay++;
-		if (legAniDelay==2) {
-			legAniFrame++;
-			if (legAniFrame > 2) {
-				legAniFrame = 0;
+  for (int i = 0; i < currentChars; i++) {
+	if (animateLegs[i]) {
+		legAniDelay[i]++;
+		if (legAniDelay[i]==2) {
+			legAniFrame[i]++;
+			if (legAniFrame[i] > 2) {
+				legAniFrame[i] = 0;
 			}
-			legAniDelay = 0;
+			legAniDelay[i] = 0;
 		}
 	} else {
-		legAniFrame = 0;
-		legAniDelay = 1;
+		legAniFrame[i] = 0;
+		legAniDelay[i] = 1;
 	}
+  }
 }
