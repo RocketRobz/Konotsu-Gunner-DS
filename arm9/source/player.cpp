@@ -235,8 +235,8 @@ void playerLoop(int pressed, int held) {
 	}
 
 	if (held & KEY_TOUCH) {
-		if (touch.py >= 32 && touch.py < 64) {
-			if (touch.px >= 64 && touch.px < 96) {
+		if (touch.py >= 48 && touch.py < 80) {
+			if (touch.px >= 80 && touch.px < 112) {
 				// Aim up-left
 				playerDirection = false;
 				aimDir = 1;
@@ -245,31 +245,31 @@ void playerLoop(int pressed, int held) {
 				// Aim up
 				aimDir = 0;
 			}
-			if (touch.px >= 160 && touch.px < 192) {
+			if (touch.px >= 144 && touch.px < 186) {
 				// Aim up-right
 				playerDirection = true;
 				aimDir = 1;
 			}
 		}
-		if (touch.py >= 64 && touch.py < 96) {
-			if (touch.px >= 32 && touch.px < 64) {
+		if (touch.py >= 80 && touch.py < 112) {
+			if (touch.px >= 80 && touch.px < 112) {
 				// Aim left
 				playerDirection = false;
 				aimDir = 2;
 			}
-			if (touch.px >= 192 && touch.px < 224) {
+			if (touch.px >= 144 && touch.px < 186) {
 				// Aim right
 				playerDirection = true;
 				aimDir = 2;
 			}
 		}
 		if (touch.py >= 112 && touch.py < 144) {
-			if (touch.px >= 32 && touch.px < 64) {
+			if (touch.px >= 80 && touch.px < 112) {
 				// Aim down-left
 				playerDirection = false;
 				aimDir = 3;
 			}
-			if (touch.px >= 192 && touch.px < 224) {
+			if (touch.px >= 144 && touch.px < 186) {
 				// Aim down-right
 				playerDirection = true;
 				aimDir = 3;
