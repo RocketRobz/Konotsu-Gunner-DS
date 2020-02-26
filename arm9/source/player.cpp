@@ -52,7 +52,7 @@ static bool currentBullet = false;
 static bool bulletActive[2] = {false};
 static bool bulletDirection[2] = {false};
 
-static int health=999, ammoCount=999, playerYmoveSpeed=1, legAniFrame, legAniDelay;
+static int health=100, ammoCount=999, playerYmoveSpeed=1, legAniFrame, legAniDelay;
 static char healthText[8], ammoText[8];
 
 void setPlayerPosition(int x, int y) {
