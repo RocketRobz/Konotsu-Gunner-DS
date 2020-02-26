@@ -61,8 +61,8 @@ void logoGraphicUnload(void) {
 void logoScreen(void) {
 	if (!inited) {
 		logoGraphicLoad();
-		inited = true;
 		fadeType = true;
+		inited = true;
 	}
 
 	if (waitTime == 60*3) {
