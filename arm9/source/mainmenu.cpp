@@ -11,6 +11,7 @@
 
 extern bool fadeType;
 extern int screenMode;
+extern void playPromiseMusic();
 
 static bool inited = false;
 
@@ -79,6 +80,7 @@ void menuScreen(void) {
 	if (!inited) {
 		menuGraphicLoad();
 		fadeType = true;
+		playPromiseMusic();
 		inited = true;
 	}
 
