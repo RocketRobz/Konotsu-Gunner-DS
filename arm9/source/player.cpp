@@ -38,7 +38,7 @@ static bool playerDirection[2] = {true};
 static bool moveDirection[2] = {true};
 static bool animateLegs[2] = {false};
 static bool moveMore[2] = {false};
-static bool yMoveDelay[2] = {false};
+static int yMoveDelay[2] = {0};
 static int hudTexID, crateTexID, playerTexID, pistolTexID, bulletTexID;
 static glImage hudImage[64 * 32];
 static glImage ammoCrateImage[16 * 16];
@@ -209,10 +209,11 @@ void playerLoop(int pressed, int held) {
 		if ((mapLocation[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 7)
 		|| (mapLocation[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
 			// Make the player jump
-			yMoveDelay[i] = !yMoveDelay[i];
-			if (yMoveDelay[i]) {
-				playerY[i] -= playerYmoveSpeed[i];
+			yMoveDelay[i]++;
+			playerY[i] -= playerYmoveSpeed[i];
+			if (yMoveDelay[i]==4) {
 				playerYmoveSpeed[i]--;
+				yMoveDelay[i] = 0;
 			}
 			if (playerYmoveSpeed[i] < 1) {
 				playerJump[i] = false;
@@ -226,12 +227,13 @@ void playerLoop(int pressed, int held) {
 			if (playerYmoveSpeed[i] == 2) {
 				jumpFallFrame[i] = true;
 			}
-			yMoveDelay[i] = !yMoveDelay[i];
-			if (yMoveDelay[i]) {
-				playerY[i] += playerYmoveSpeed[i];
+			yMoveDelay[i]++;
+			playerY[i] += playerYmoveSpeed[i];
+			if (yMoveDelay[i]==4) {
 				playerYmoveSpeed[i]++;
+				yMoveDelay[i] = 0;
 			}
-			if (playerYmoveSpeed[i] > 16) playerYmoveSpeed[i] = 16;
+			if (playerYmoveSpeed[i] > 8) playerYmoveSpeed[i] = 8;
 		}
 		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17)
 		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 17)) {
@@ -240,6 +242,7 @@ void playerLoop(int pressed, int held) {
 			playerYmoveSpeed[i] = 1;
 			allowPlayerJump[i] = true;
 			jumpFallFrame[i] = false;
+			yMoveDelay[i] = 0;
 		}
 		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 22)
 		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 22)) {
@@ -249,6 +252,7 @@ void playerLoop(int pressed, int held) {
 			playerYmoveSpeed[i] = 1;
 			allowPlayerJump[i] = false;
 			playerDirection[i] = true;
+			yMoveDelay[i] = 0;
 		}
 	}
   }
@@ -310,7 +314,7 @@ void playerLoop(int pressed, int held) {
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump[0]) {
 		playerJump[0] = true;
-		playerYmoveSpeed[0] = 10;
+		playerYmoveSpeed[0] = 5;
 	}
 	
 	if ((held & KEY_L) && !bulletActive[currentBullet]) {
