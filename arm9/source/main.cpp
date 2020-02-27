@@ -137,6 +137,7 @@ int main(int argc, char **argv) {
 				break;
 		}
 		swiWaitForVBlank();
+		oamUpdate(&oamSub);
 	}
 
 	return 0;

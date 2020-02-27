@@ -2,6 +2,6 @@
 #define LOGOS_H
 
 extern void logoScreen(void);
-extern void renderLogo(bool top);
+extern void renderLogo(void);
 
 #endif	// LOGOS_H

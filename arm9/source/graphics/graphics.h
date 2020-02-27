@@ -19,6 +19,9 @@
 ------------------------------------------------------------------*/
 #pragma once
 
+extern int bg3;
+extern u16* gfxSub;
+
 bool screenFadedIn(void);
 bool screenFadedOut(void);
 

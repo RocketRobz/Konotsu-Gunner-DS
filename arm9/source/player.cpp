@@ -440,7 +440,7 @@ void renderPlayer(void) {
   for (int i = 0; i < currentChars; i++) {
 	if (animateLegs[i]) {
 		legAniDelay[i]++;
-		if (legAniDelay[i]==2) {
+		if (legAniDelay[i]==4) {
 			legAniFrame[i]++;
 			if (legAniFrame[i] > 2) {
 				legAniFrame[i] = 0;
