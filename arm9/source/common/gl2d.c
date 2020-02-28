@@ -167,12 +167,14 @@ void glScreen2D( void )
 
 	//this should work the same as the normal gl call
 	glViewport(0,0,255,191);
+	//glViewport(0,0,213,191);
 	
 	
 	//any floating point gl call is being converted to fixed prior to being implemented
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 	gluPerspective( 70, 256.0 / 192.0, 1, 200 );
+	//gluPerspective( 70, 214.0 / 192.0, 1, 200 );
 	
 	gluLookAt(	0.0, 0.0, 1.0,		//camera possition 
 				0.0, 0.0, 0.0,		//look at
@@ -313,6 +315,12 @@ void glLine( int x1, int y1, int x2, int y2, int color )
 	x2++;
 	y2++;
 	
+	extern bool wideScreen;
+	if (wideScreen) {
+		x1 = x1/1.2;
+		x2 = x2/1.2;
+	}
+
 	glBindTexture( 0, 0 );
 	glColor( color);
 	glBegin( GL_TRIANGLES );
@@ -342,6 +350,12 @@ void glBox( int x1, int y1, int x2, int y2, int color )
 	x2++;
 	y2++;
 	
+	extern bool wideScreen;
+	if (wideScreen) {
+		x1 = x1/1.2;
+		x2 = x2/1.2;
+	}
+
 	glBindTexture( 0, 0 );
 	glColor( color );
 	glBegin( GL_TRIANGLES );
@@ -384,6 +398,12 @@ void glBoxFilled( int x1, int y1, int x2, int y2, int color )
 	x2++;
 	y2++;
 	
+	extern bool wideScreen;
+	if (wideScreen) {
+		x1 = x1/1.2;
+		x2 = x2/1.2;
+	}
+
 	glBindTexture( 0, 0 );
 	glColor( color );
 	glBegin( GL_QUADS );
@@ -420,6 +440,12 @@ void glBoxFilledGradient( int x1, int y1, int x2, int y2,
 	x2++;
 	y2++;
 	
+	extern bool wideScreen;
+	if (wideScreen) {
+		x1 = x1/1.2;
+		x2 = x2/1.2;
+	}
+
 	glBindTexture( 0,0 );
 	glBegin( GL_QUADS );
 		glColor( color1 ); gxVertex3i( x1, y1, g_depth );		// use 3i for first vertex so that we increment HW depth
@@ -558,6 +584,12 @@ void glSprite( int x, int y, int flipmode, const glImage *spr )
         glBindTexture( GL_TEXTURE_2D, spr->textureID );
         gCurrentTexture = spr->textureID;
     }
+
+	extern bool wideScreen;
+	if (wideScreen) {
+		x1 = x1/1.2;
+		x2 = x2/1.2;
+	}
 
 	glBegin( GL_QUADS );
 		

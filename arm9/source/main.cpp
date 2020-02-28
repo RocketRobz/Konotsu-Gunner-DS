@@ -21,6 +21,7 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+bool wideScreen = false;
 bool fadeType = false;				// false = out, true = in
 bool fadeColor = true;
 int screenMode = 0;
@@ -111,6 +112,8 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 
 	defaultExceptionHandler();
+
+	wideScreen = (strcmp(argv[1], "wide") == 0);
 
 	//fatInitDefault();
 

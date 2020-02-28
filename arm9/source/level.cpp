@@ -16,6 +16,7 @@
 #define bgTile 11
 #define grayBlockTile 17
 
+extern bool wideScreen;
 extern bool fadeType;
 extern void playAltitMusic();
 
@@ -32,7 +33,6 @@ int cameraYpos = 0;
 extern int playerX[2], playerY[2];
 
 static int tileTexID;
-static glImage aimButtonImage[(32 / 32) * (128 / 32)];
 glImage tileImage[(128 / 16) * (128 / 16)];
 
 void levelGraphicLoad(void) {
@@ -185,14 +185,14 @@ void levelMode(void) {
 }
 
 void levelGraphicDisplay(void) {
-	glBoxFilled(0, 0, 256, 192, RGB15(85/8, 85/8, 255/8));
+	glBoxFilled(0, 0, (wideScreen ? 308 : 256), 192, RGB15(85/8, 85/8, 255/8));
 	/*for (int x = 0; x < 256; x += 16) {
 		for (int y = 0; y < 192; y += 16) {
 			glSprite(x, y, GL_FLIP_NONE, &tileImage[bgTile]);
 		}
 	}*/
-	//if (mapHsize>16 && playerX>128) {
-		cameraXpos = playerX[0]-128;
+	//if (mapHsize>16 && playerX>(256/2)) {
+		cameraXpos = playerX[0]-((wideScreen ? 308 : 256)/2);
 	/*	if (cameraXpos > (mapHsize*16)-256) {
 			cameraXpos = (mapHsize*16)-256;
 		}

@@ -10,6 +10,7 @@
 #include "buttn_battle.h"
 #include "buttn_create.h"
 
+extern bool wideScreen;
 extern bool fadeType;
 extern int screenMode;
 extern void playPromiseMusic();
@@ -121,14 +122,14 @@ void menuScreen(void) {
 }
 
 void renderMenuTop(void) {
-	for (int x = 0; x < 16; x++) {
+	for (int x = 0; x < (wideScreen ? 20 : 16); x++) {
 		for (int y = 0; y < 13; y++) {
 			glSprite((x*16), (y*16)+bgYpos, GL_FLIP_NONE, &tileImage[1]);
 		}
 	}
 	for (int x = 0; x < 8; x++) {
 		for (int y = 0; y < 6; y++) {
-			glSprite(x*32, y*32, GL_FLIP_NONE, &titleImage[(y*8)+x]);
+			glSprite((x*32)+(wideScreen ? 22 : 0), y*32, GL_FLIP_NONE, &titleImage[(y*8)+x]);
 		}
 	}
 

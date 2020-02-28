@@ -8,6 +8,7 @@
 #include "logo_luolopi_chn.h"
 #include "logo_rocketrobz.h"
 
+extern bool wideScreen;
 extern bool fadeType;
 extern bool fadeColor;
 extern int screenMode;
@@ -64,7 +65,7 @@ void logoScreen(void) {
 void renderLogo(void) {
 	for (int x = 0; x < 8; x++) {
 		for (int y = 0; y < 6; y++) {
-			glSprite(x*32, y*32, GL_FLIP_NONE, &logoImage[(y*8)+x]);
+			glSprite((x*32)+(wideScreen ? 22 : 0), y*32, GL_FLIP_NONE, &logoImage[(y*8)+x]);
 		}
 	}
 }
