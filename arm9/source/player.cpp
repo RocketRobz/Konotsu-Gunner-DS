@@ -160,28 +160,42 @@ void bulletLoop(void) {
 	for (int i = 0; i < 2; i++) {
 		if (!bulletActive[i]) continue;
 
+		// Move bullet horizontally
 		if ((bulletX[i] > 0) && (bulletX[i] < mapHsize*16)
-		&& ((mapLocation[((bulletY[i]/16)*mapHsize)+(bulletX[i]/16)] == 7)
-		|| (mapLocation[((bulletY[i]/16)*mapHsize)+((bulletX[i]+4)/16)] == 7))) {
+		&& ((mapLocation[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
 			switch (bulletDir[i]) {
 				case 0:
-					bulletY[i] -= 8;
 					break;
 				case 1:
+				case 2:
+				case 3:
 					(bulletDirection[i] ? (bulletX[i] += 8) : (bulletX[i] -= 8));
+					break;
+			}
+		} else {
+			sndAmmoOut();
+			bulletActive[i] = false;
+			continue;
+		}
+
+		// Move bullet vertically
+		if ((bulletY[i] > 0) && (bulletY[i] < mapVsize*16)
+		&& ((mapLocation[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
+			switch (bulletDir[i]) {
+				case 0:
+				case 1:
 					bulletY[i] -= 8;
 					break;
 				case 2:
-					(bulletDirection[i] ? (bulletX[i] += 8) : (bulletX[i] -= 8));
 					break;
 				case 3:
-					(bulletDirection[i] ? (bulletX[i] += 8) : (bulletX[i] -= 8));
 					bulletY[i] += 8;
 					break;
 			}
 		} else {
 			sndAmmoOut();
 			bulletActive[i] = false;
+			continue;
 		}
 	}
 }
