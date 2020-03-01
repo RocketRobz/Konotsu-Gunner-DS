@@ -348,7 +348,7 @@ void playerLoop(int pressed, int held) {
 		playerJump[0] = true;
 		airJumpEffctX[0] = (playerDirection[0] ? playerX[0]-6 : playerX[0]);
 		airJumpEffctY[0] = playerY[0]+20;
-		airJumpEffctFrame[i] = 0;
+		airJumpEffctFrame[0] = 0;
 		airJumpEffctActive[0] = jumpFallFrame[0];
 		playerYmoveSpeed[0] = 5;
 	}
