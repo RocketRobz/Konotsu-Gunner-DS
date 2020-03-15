@@ -21,6 +21,9 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+bool useTwlCfg = false;
+int language = 0;
+
 bool wideScreen = false;
 bool fadeType = false;				// false = out, true = in
 bool fadeColor = true;
@@ -113,7 +116,10 @@ int main(int argc, char **argv) {
 
 	defaultExceptionHandler();
 
+	useTwlCfg = (isDSiMode() && (*(u8*)0x02000400 & 0x0F) && (*(u8*)0x02000404 == 0));
 	wideScreen = (strcmp(argv[1], "wide") == 0);
+
+	language = (useTwlCfg ? *(u8*)0x02000406 : PersonalData->language);
 
 	//fatInitDefault();
 
