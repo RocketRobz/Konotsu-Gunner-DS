@@ -53,6 +53,9 @@ void levelGraphicLoad(void) {
 
 void levelMode(void) {
 	if (!inited) {
+		setPlayerPosition(0, testMap_player1X, testMap_player1Y);
+		setPlayerPosition(1, testMap_player2X, testMap_player2Y);
+
 		playerGraphicLoad();
 		decompress(bottomImageBitmap, bgGetGfxPtr(bg3), LZ77Vram);
 		bgSetScroll(bg3, 0, 0);

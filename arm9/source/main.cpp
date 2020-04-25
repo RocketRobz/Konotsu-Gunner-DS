@@ -128,8 +128,6 @@ int main(int argc, char **argv) {
 	fontInit();
 
 	initPlayers(2);
-	setPlayerPosition(0, 128, 0);
-	setPlayerPosition(1, 64, 0);
 
 	while (1) {
 		clearText();
