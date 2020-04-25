@@ -5,12 +5,12 @@
 
 #include "../tilenum.h"
 
-// Map size (tile count): 32x24
-
 int testMap_player1X = 128;
 int testMap_player1Y = 0;
 int testMap_player2X = 64;
 int testMap_player2Y = 0;
+
+// Map size (tile count): 32x24
 
 u8 testMap[32*27] = {
 	_AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR, _AIR,
