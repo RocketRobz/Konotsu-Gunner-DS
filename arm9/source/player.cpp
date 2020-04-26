@@ -16,7 +16,7 @@ extern void sndShoot();
 extern void sndAmmoOut();
 extern void sndHurt();
 
-extern u8* mapLocation;
+extern u8 mapData[];
 
 extern int mapHsize;
 extern int mapVsize;
@@ -180,7 +180,7 @@ void bulletLoop(void) {
 
 		// Move bullet horizontally
 		if ((bulletX[i] > 0) && (bulletX[i] < mapHsize*16)
-		&& ((mapLocation[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
+		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
 			switch (bulletDir[i]) {
 				case 0:
 					break;
@@ -198,7 +198,7 @@ void bulletLoop(void) {
 
 		// Move bullet vertically
 		if ((bulletY[i] > 0) && (bulletY[i] < mapVsize*16)
-		&& ((mapLocation[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
+		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
 			switch (bulletDir[i]) {
 				case 0:
 				case 1:
@@ -230,16 +230,16 @@ void playerLoop(int pressed, int held) {
 	if (playerJump[i]) {
 		allowPlayerJump[i] = false;
 		jumpFallFrame[i] = true;
-		if ((mapLocation[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 17)
-		|| (mapLocation[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 17)
+		if ((mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 17)
+		|| (mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 17)
 		|| playerY[i]<0) {
 			// Touched solid tile
 			playerY[i]++;
 			playerJump[i] = false;
 			playerYmoveSpeed[i] = 1;
 		}
-		if ((mapLocation[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 7)
-		|| (mapLocation[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
+		if ((mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 7)
+		|| (mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
 			// Make the player jump
 			yMoveDelay[i]++;
 			playerY[i] -= playerYmoveSpeed[i];
@@ -253,8 +253,8 @@ void playerLoop(int pressed, int held) {
 			}
 		}
 	} else {
-		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 7)
-		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
+		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 7)
+		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
 			// Make the player fall
 			if (playerYmoveSpeed[i] == 2) {
 				jumpFallFrame[i] = true;
@@ -267,8 +267,8 @@ void playerLoop(int pressed, int held) {
 			}
 			if (playerYmoveSpeed[i] > 8) playerYmoveSpeed[i] = 8;
 		}
-		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17)
-		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 17)) {
+		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17)
+		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 17)) {
 			// On solid tile
 			playerY[i] -= (playerY[i] % 16);
 			playerYmoveSpeed[i] = 1;
@@ -276,8 +276,8 @@ void playerLoop(int pressed, int held) {
 			jumpFallFrame[i] = false;
 			yMoveDelay[i] = 0;
 		}
-		if ((mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 22)
-		|| (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 22)) {
+		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 22)
+		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 22)) {
 			// Player is killed
 			sndHurt();
 			resetPlayerPosition(i);
@@ -390,11 +390,11 @@ void playerLoop(int pressed, int held) {
 	
   for (int i = 0; i < currentChars; i++) {
 	if (moveDirection[i]) {
-		if (mapLocation[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+8)/16)] == 17) {
+		if (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+8)/16)] == 17) {
 			playerX[i] -= 1+moveMore[i];
 		}
 	} else {
-		if (mapLocation[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17) {
+		if (mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17) {
 			playerX[i] += 1+moveMore[i];
 		}
 	}

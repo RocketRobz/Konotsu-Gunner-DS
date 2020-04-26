@@ -10,6 +10,7 @@
 #include "bottomImage.h"
 #include "spr_aimbutton.h"
 #include "tiles.h"
+#include "tilenum.h"
 
 #include "testmap.h"
 
@@ -22,13 +23,13 @@ extern void playAltitMusic();
 
 static bool inited = false;
 
-u8* mapLocation = (u8*)testMap;
-
 int mapHsize = 32;
 int mapVsize = 24;
 
 int cameraXpos = 0;
 int cameraYpos = 0;
+
+u8 mapData[32*27] = {7};
 
 extern int playerX[2], playerY[2];
 
@@ -51,8 +52,49 @@ void levelGraphicLoad(void) {
 							);
 }
 
+void loadLevel(u8* orgMapData) {
+	mapHsize = -1;
+	mapVsize = -1;
+	memset(mapData, 7, sizeof(mapData));
+
+	bool mapHsizeSet = false;
+	bool processTile = false;
+	int i1 = -1;	// Position in generated map
+	int i2 = -1;	// Position in kglf file
+	while (1) {
+		if (orgMapData[i2] == 'E' && orgMapData[i2+1] == 'N' && orgMapData[i2+2] == 'D') {
+			break;
+		} else if (orgMapData[i2] == 0x0D && orgMapData[i2+1] == 0x0A) {
+			i2++;
+			mapVsize++;
+			mapHsizeSet = true;
+		} else if (orgMapData[i2] == 0x0A) {
+			mapVsize++;
+			mapHsizeSet = true;
+		} else {
+			i1++;
+			processTile = true;
+		}
+		i2++;
+		if (!mapHsizeSet) {
+			mapHsize++;
+		}
+		if (processTile) {
+			for (int i3 = 0; i3 < (int)sizeof(textTiles); i3++) {
+				if (textTiles[i3] == orgMapData[i2]) {
+					mapData[i1] = i3;
+					break;
+				}
+			}
+			processTile = false;
+		}
+	}
+}
+
 void levelMode(void) {
 	if (!inited) {
+		loadLevel(testMap_kglf);
+
 		setPlayerPosition(0, testMap_player1X, testMap_player1Y);
 		setPlayerPosition(1, testMap_player2X, testMap_player2Y);
 
@@ -212,8 +254,8 @@ void levelGraphicDisplay(void) {
 	}*/
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
-			if (mapLocation[(y*mapHsize)+x] != 7) {
-				glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapLocation[(y*mapHsize)+x]]);
+			if (mapData[(y*mapHsize)+x] != 7) {
+				glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapData[(y*mapHsize)+x]]);
 			}
 		}
 	}
