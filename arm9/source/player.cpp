@@ -219,6 +219,8 @@ void bulletLoop(void) {
 }
 
 void playerLoop(int pressed, int held) {
+	extern bool isSolidTile(u8 tile);
+
 	sprintf(ammoText, "%i", ammoCount);
 	sprintf(healthText, "%i", health);
 	printLarge(true, 16, 12, ammoText);
@@ -230,8 +232,8 @@ void playerLoop(int pressed, int held) {
 	if (playerJump[i]) {
 		allowPlayerJump[i] = false;
 		jumpFallFrame[i] = true;
-		if ((mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 17)
-		|| (mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 17)
+		if ((isSolidTile(mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)]))
+		|| (isSolidTile(mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)]))
 		|| playerY[i]<0) {
 			// Touched solid tile
 			playerY[i]++;
@@ -267,8 +269,8 @@ void playerLoop(int pressed, int held) {
 			}
 			if (playerYmoveSpeed[i] > 8) playerYmoveSpeed[i] = 8;
 		}
-		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17)
-		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 17)) {
+		if ((isSolidTile(mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)]))
+		|| (isSolidTile(mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)]))) {
 			// On solid tile
 			playerY[i] -= (playerY[i] % 16);
 			playerYmoveSpeed[i] = 1;
@@ -390,11 +392,11 @@ void playerLoop(int pressed, int held) {
 	
   for (int i = 0; i < currentChars; i++) {
 	if (moveDirection[i]) {
-		if (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+8)/16)] == 17) {
+		if (isSolidTile(mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+8)/16)])) {
 			playerX[i] -= 1+moveMore[i];
 		}
 	} else {
-		if (mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 17) {
+		if (isSolidTile(mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)])) {
 			playerX[i] += 1+moveMore[i];
 		}
 	}

@@ -13,6 +13,7 @@
 #include "tilenum.h"
 
 #include "testmap.h"
+#include "level_kglf.h"
 
 #define bgTile 11
 #define grayBlockTile 17
@@ -52,6 +53,40 @@ void levelGraphicLoad(void) {
 							);
 }
 
+bool isSolidTile(u8 tile) {
+	switch (tile) {
+		case 0:
+		case 4:
+		case 5:
+		case 6:
+		case 8:
+		case 13:
+		case 16:
+		case 17:
+		case 20:
+		case 21:
+		case 24:
+		case 25:
+		case 28:
+		case 29:
+		case 33:
+		case 34:
+		case 35:
+		case 36:
+		case 37:
+		case 40:
+		case 41:
+		case 42:
+		case 43:
+		case 44:
+		case 45:
+			return true;
+		default:
+			break;
+	}
+	return false;
+}
+
 void loadLevel(u8* orgMapData) {
 	mapHsize = -1;
 	mapVsize = -1;
@@ -59,6 +94,7 @@ void loadLevel(u8* orgMapData) {
 
 	bool mapHsizeSet = false;
 	bool processTile = false;
+	int generatedPlayerX = -16;
 	int i1 = -1;	// Position in generated map
 	int i2 = -1;	// Position in kglf file
 	while (1) {
@@ -67,18 +103,24 @@ void loadLevel(u8* orgMapData) {
 		} else if (orgMapData[i2] == 0x0D && orgMapData[i2+1] == 0x0A) {
 			i2++;
 			mapVsize++;
+			generatedPlayerX = -16;
 			mapHsizeSet = true;
 		} else if (orgMapData[i2] == 0x0A) {
 			mapVsize++;
+			generatedPlayerX = -16;
 			mapHsizeSet = true;
 		} else {
 			i1++;
 			processTile = true;
 		}
+		generatedPlayerX += 16;
 		i2++;
 		if (!mapHsizeSet) {
 			mapHsize++;
 		}
+		if (orgMapData[i2] == '1') {
+			setPlayerPosition(0, generatedPlayerX, (mapVsize*16)-16);
+		} else
 		if (processTile) {
 			for (int i3 = 0; i3 < (int)sizeof(textTiles); i3++) {
 				if (textTiles[i3] == orgMapData[i2]) {
@@ -93,9 +135,9 @@ void loadLevel(u8* orgMapData) {
 
 void levelMode(void) {
 	if (!inited) {
-		loadLevel(testMap_kglf);
+		loadLevel(level_kglf);
 
-		setPlayerPosition(0, testMap_player1X, testMap_player1Y);
+		//setPlayerPosition(0, testMap_player1X, testMap_player1Y);
 		setPlayerPosition(1, testMap_player2X, testMap_player2Y);
 
 		playerGraphicLoad();
