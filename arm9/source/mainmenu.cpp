@@ -1,6 +1,7 @@
 #include <nds.h>
 #include "gl2d.h"
 #include <maxmod9.h>
+#include "tonccpy.h"
 
 #include "graphics/graphics.h"
 #include "graphics/fontHandler.h"
