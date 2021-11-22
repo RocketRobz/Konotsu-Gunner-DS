@@ -64,14 +64,14 @@ void InitSound() {
 		128,	// panning
 	};
 
-	//mmLoad(MOD_PROMISE);
+	mmLoad(MOD_PROMISE);
 	mmLoad(MOD_ALTIT);
 	mmSetModuleVolume(500);
 }
 
-//void playPromiseMusic() {
-	//mmStart(MOD_PROMISE, MM_PLAY_LOOP);
-//}
+void playPromiseMusic() {
+	mmStart(MOD_PROMISE, MM_PLAY_LOOP);
+}
 
 void playAltitMusic() {
 	mmStart(MOD_ALTIT, MM_PLAY_LOOP);
