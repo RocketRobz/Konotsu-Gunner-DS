@@ -113,12 +113,10 @@ void loadLevel(const char* filename) {
 	while (1) {
 		if (orgMapData[i2] == 'E' && orgMapData[i2+1] == 'N' && orgMapData[i2+2] == 'D') {
 			break;
-		} else if (orgMapData[i2] == 0x0D && orgMapData[i2+1] == 0x0A) {
-			i2++;
-			mapVsize++;
-			generatedPlayerX = -16;
-			mapHsizeSet = true;
-		} else if (orgMapData[i2] == 0x0A) {
+		} else if ((orgMapData[i2] == 0x0D && orgMapData[i2+1] == 0x0A) || (orgMapData[i2] == 0x0A)) {
+			if (orgMapData[i2] == 0x0D && orgMapData[i2+1] == 0x0A) {
+				i2++;
+			}
 			mapVsize++;
 			generatedPlayerX = -16;
 			mapHsizeSet = true;
