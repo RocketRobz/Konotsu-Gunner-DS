@@ -27,6 +27,8 @@ static int torsoColor[3] = {255, 85, 85};
 static int legColor[3] = {170, 85, 0};
 static int feetColor[3] = {0, 0, 170};
 
+static bool dev_bullets = false;
+
 static int currentChars = 2;
 static bool playerJump[2] = {false};
 static bool allowPlayerJump[2] = {false};
@@ -216,8 +218,15 @@ void bulletLoop(void) {
 
 void playerLoop(int pressed, int held) {
 	extern bool isSolidTile(u8 tile);
-
+	if (dev_bullets) {
+	printLarge(true, 0, 176, "Infinite Bullets on.");
+	printLarge(true, 0, 184, "Fucking cheating ass mofo.");
+	ammoCount = 999;
+	sprintf(ammoText, "inf");
+	}
+	if (!dev_bullets) {
 	sprintf(ammoText, "%i", ammoCount);
+	}
 	sprintf(healthText, "%i", health);
 	printLarge(true, 16, 12, ammoText);
 	printLarge(true, 16, 20, healthText);
@@ -287,6 +296,11 @@ void playerLoop(int pressed, int held) {
 	}
   }
 
+	if (pressed & KEY_SELECT) {
+	dev_bullets = !dev_bullets;
+	}
+	
+	
 	if (held & KEY_TOUCH) {
 		if (touch.py >= 48 && touch.py < 80) {
 			if (touch.px >= 80 && touch.px < 112) {
@@ -352,6 +366,10 @@ void playerLoop(int pressed, int held) {
 		playerYmoveSpeed[0] = 5;
 	}
 	
+	if ((pressed & KEY_L) && ammoCount <= 0) {
+		snd().playEmptyChamber();
+	}
+			
 	if ((held & KEY_L) && !bulletActive[currentBullet]) {
 		shootDelay[0]++;
 		if (ammoCount > 0 && shootDelay[0]==6*2) {
