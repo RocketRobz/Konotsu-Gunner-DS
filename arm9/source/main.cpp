@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 	graphicsInit();
 	fontInit();
 
-	initPlayers(2);
+	initPlayers(1);
 
 	while (1) {
 		clearText();
