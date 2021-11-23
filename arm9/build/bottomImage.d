@@ -1,1 +1,0 @@
-bottomImage.o: bottomImage.s
