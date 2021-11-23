@@ -1,0 +1,19 @@
+# Binary File
+*.nds
+*.NDS
+*.cia
+*.elf
+*.arm7
+*.arm9
+*.DS_Store
+*soundbank*.bin
+thumbs.db
+
+# Build Directory
+build/
+data/
+
+# Project Files
+.idea/
+.vscode/
+ipch/
