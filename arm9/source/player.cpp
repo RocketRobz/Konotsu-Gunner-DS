@@ -53,7 +53,7 @@ static bool bulletDirection[2] = {false};
 static int airJumpEffctX[2], airJumpEffctY[2], airJumpEffctFrame[2], airJumpEffctDelay[2];
 static bool airJumpEffctActive[2] = {false};
 
-static int health=100, ammoCount=999, playerYmoveSpeed[2]={1}, legAniFrame[2], legAniDelay[2];
+static int health=100, ammoCount=5, playerYmoveSpeed[2]={1}, legAniFrame[2], legAniDelay[2];
 static char healthText[8], ammoText[8];
 
 void initPlayers(int numberOfChars) {
@@ -344,6 +344,7 @@ void playerLoop(int pressed, int held) {
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump[0]) {
 		playerJump[0] = true;
+		snd().playJump();
 		airJumpEffctX[0] = (playerDirection[0] ? playerX[0]-6 : playerX[0]);
 		airJumpEffctY[0] = playerY[0]+20;
 		airJumpEffctFrame[0] = 0;
@@ -379,8 +380,12 @@ void playerLoop(int pressed, int held) {
 			bulletActive[currentBullet] = true;
 			currentBullet = !currentBullet;
 			shootDelay[0] = 0;
-		} else if (ammoCount == 0 && shootDelay[0]==6*2) {
-			ammoCount = 999;	// Reload ammo
+		// } else if (ammoCount == 0 && shootDelay[0]==6*2) {
+		} else if (ammoCount <= 0) {
+			if (ammoCount < 0) {
+			ammoCount = 0;
+			}
+			//ammoCount = 5;	// Reload ammo
 		}
 	} else {
 		shootDelay[0] = 5*2;
