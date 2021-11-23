@@ -33,6 +33,7 @@ static mm_sound_effect snd_GUNSHT;
 static mm_sound_effect snd_AMMOOUT;
 static mm_sound_effect snd_HURT;
 static mm_sound_effect snd_PLYRJMP8;
+static mm_sound_effect snd_gunempty;
 
 void InitSound() {
 	mmInitDefaultMem((mm_addr)soundbank_bin);
@@ -41,6 +42,7 @@ void InitSound() {
 	mmLoadEffect( SFX_AMMOOUT );
 	mmLoadEffect( SFX_HURT );
 	mmLoadEffect( SFX_PLYRJMP8 );
+	mmLoadEffect( SFX_GUNEMPTY );
 
 	snd_GUNSHT = {
 		{ SFX_GUNSHT } ,			// id
@@ -68,6 +70,14 @@ void InitSound() {
 	
 	snd_PLYRJMP8 = {
 		{ SFX_PLYRJMP8 } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
+	
+	snd_gunempty = {
+		{ SFX_GUNEMPTY } ,			// id
 		(int)(1.0f * (1<<10)),	// rate
 		0,		// handle
 		255,	// volume
@@ -102,6 +112,11 @@ void sndHurt() {
 void sndJump() {
 	mmEffectEx(&snd_PLYRJMP8);
 }
+
+void sndEmptyChamber() {
+	mmEffectEx(&snd_gunempty);
+}
+
 
 //---------------------------------------------------------------------------------
 void stop (void) {

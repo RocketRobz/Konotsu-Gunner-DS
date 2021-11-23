@@ -16,6 +16,7 @@ extern void sndShoot();
 extern void sndAmmoOut();
 extern void sndHurt();
 extern void sndJump();
+extern void sndEmptyChamber();
 
 extern u8 mapData[];
 
@@ -357,6 +358,10 @@ void playerLoop(int pressed, int held) {
 		playerYmoveSpeed[0] = 5;
 	}
 	
+	if (pressed & KEY_L && ammoCount <= 0) {
+			sndEmptyChamber();
+	}
+			
 	if ((held & KEY_L) && !bulletActive[currentBullet]) {
 		shootDelay[0]++;
 		if (ammoCount > 0 && shootDelay[0]==6*2) {
