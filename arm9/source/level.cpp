@@ -52,10 +52,10 @@ void levelGraphicLoad(void) {
 
 bool isSolidTile(u8 tile) {
 	switch (tile) {
-		case 0:
 		case 4:
 		case 5:
 		case 6:
+		case 7:
 		case 8:
 		case 13:
 		case 16:
@@ -87,7 +87,7 @@ bool isSolidTile(u8 tile) {
 void loadLevel(const char* filename) {
 	mapHsize = -1;
 	mapVsize = -1;
-	toncset(mapData, 7, sizeof(mapData));
+	toncset(mapData, 0, sizeof(mapData));
 
 	off_t klvFileSize = 0;
 
@@ -307,7 +307,7 @@ void levelGraphicDisplay(void) {
 	}*/
 	for (int x = 0; x < mapHsize; x++) {
 		for (int y = 0; y < mapVsize; y++) {
-			if (mapData[(y*mapHsize)+x] != 7) {
+			if (mapData[(y*mapHsize)+x] != 0) {
 				glSprite((x*16)-cameraXpos, (y*16)-cameraYpos, GL_FLIP_NONE, &tileImage[mapData[(y*mapHsize)+x]]);
 			}
 		}

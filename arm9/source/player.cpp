@@ -178,7 +178,7 @@ void bulletLoop(void) {
 
 		// Move bullet horizontally
 		if ((bulletX[i] > 0) && (bulletX[i] < mapHsize*16)
-		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
+		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 0))) {
 			switch (bulletDir[i]) {
 				case 0:
 					break;
@@ -196,7 +196,7 @@ void bulletLoop(void) {
 
 		// Move bullet vertically
 		if ((bulletY[i] > 0) && (bulletY[i] < mapVsize*16)
-		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 7))) {
+		&& ((mapData[(((bulletDir[i]==3 ? bulletY[i]+4 : bulletY[i])/16)*mapHsize)+((bulletDirection[i] ? bulletX[i]+4 : bulletX[i])/16)] == 0))) {
 			switch (bulletDir[i]) {
 				case 0:
 				case 1:
@@ -245,8 +245,8 @@ void playerLoop(int pressed, int held) {
 			playerJump[i] = false;
 			playerYmoveSpeed[i] = 1;
 		}
-		if ((mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 7)
-		|| (mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
+		if ((mapData[((playerY[i]/16)*mapHsize)+(playerX[i]/16)] == 0)
+		|| (mapData[((playerY[i]/16)*mapHsize)+((playerX[i]+4)/16)] == 0)) {
 			// Make the player jump
 			yMoveDelay[i]++;
 			playerY[i] -= playerYmoveSpeed[i];
@@ -260,8 +260,8 @@ void playerLoop(int pressed, int held) {
 			}
 		}
 	} else {
-		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 7)
-		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 7)) {
+		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 0)
+		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 0)) {
 			// Make the player fall
 			if (playerYmoveSpeed[i] == 2) {
 				jumpFallFrame[i] = true;
