@@ -17,6 +17,7 @@ class SoundControl {
         mm_sfxhand playGunsht();
         mm_sfxhand playAmmoOut();
         mm_sfxhand playHurt();
+        mm_sfxhand playJump();
         
         // Refill the stream buffers
         volatile void updateStream();
@@ -35,6 +36,7 @@ class SoundControl {
         mm_sound_effect snd_gunsht;
         mm_sound_effect snd_ammoout;
         mm_sound_effect snd_hurt;
+        mm_sound_effect snd_jump;
         mm_stream stream;
         mm_ds_system sys;
         bool stream_is_playing;
