@@ -1,9 +1,9 @@
 #include <nds.h>
 #include "gl2d.h"
-#include <maxmod9.h>
 
 #include "graphics/fontHandler.h"
 #include "graphics/graphics.h"
+#include "sound.h"
 
 #include "spr_hud.h"
 #include "spr_ammocrate.h"
@@ -11,10 +11,6 @@
 #include "spr_pistol.h"
 #include "spr_bullet.h"
 #include "spr_airjumpeffect.h"
-
-extern void sndShoot();
-extern void sndAmmoOut();
-extern void sndHurt();
 
 extern u8 mapData[];
 
@@ -191,7 +187,7 @@ void bulletLoop(void) {
 					break;
 			}
 		} else {
-			sndAmmoOut();
+			snd().playAmmoOut();
 			bulletActive[i] = false;
 			continue;
 		}
@@ -211,7 +207,7 @@ void bulletLoop(void) {
 					break;
 			}
 		} else {
-			sndAmmoOut();
+			snd().playAmmoOut();
 			bulletActive[i] = false;
 			continue;
 		}
@@ -281,7 +277,7 @@ void playerLoop(int pressed, int held) {
 		if ((mapData[(((playerY[i]+31)/16)*mapHsize)+(playerX[i]/16)] == 22)
 		|| (mapData[(((playerY[i]+31)/16)*mapHsize)+((playerX[i]+4)/16)] == 22)) {
 			// Player is killed
-			sndHurt();
+			snd().playHurt();
 			resetPlayerPosition(i);
 			playerYmoveSpeed[i] = 1;
 			allowPlayerJump[i] = false;
@@ -378,7 +374,7 @@ void playerLoop(int pressed, int held) {
 			}
 			bulletDirection[currentBullet] = playerDirection[0];
 			bulletDir[currentBullet] = aimDir[0];
-			sndShoot();
+			snd().playGunsht();
 			ammoCount--;
 			bulletActive[currentBullet] = true;
 			currentBullet = !currentBullet;

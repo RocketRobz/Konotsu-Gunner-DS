@@ -1,10 +1,10 @@
 #include <nds.h>
 #include "gl2d.h"
-#include <maxmod9.h>
 #include "tonccpy.h"
 
 #include "graphics/graphics.h"
 #include "graphics/fontHandler.h"
+#include "sound.h"
 
 #include "bg_title.h"
 #include "logo_title.h"
@@ -17,7 +17,6 @@ extern int language;
 extern bool wideScreen;
 extern bool fadeType;
 extern int screenMode;
-extern void playPromiseMusic();
 
 static bool inited = false;
 
@@ -113,7 +112,8 @@ void menuScreen(void) {
 			);
 
 		fadeType = true;
-		playPromiseMusic();
+		snd().loadStream("nitro:/music/thmA.wav", true);
+		snd().beginStream();
 		inited = true;
 	}
 

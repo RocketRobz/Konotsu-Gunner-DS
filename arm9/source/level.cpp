@@ -1,9 +1,9 @@
 #include <nds.h>
 #include "gl2d.h"
-#include <maxmod9.h>
 
 #include "graphics/fontHandler.h"
 #include "graphics/graphics.h"
+#include "sound.h"
 
 #include "player.h"
 
@@ -20,7 +20,6 @@
 
 extern bool wideScreen;
 extern bool fadeType;
-extern void playAltitMusic();
 
 static bool inited = false;
 
@@ -260,7 +259,8 @@ void levelMode(void) {
 			);
 
 		fadeType = true;
-		playAltitMusic();
+		snd().loadStream("nitro:/music/tense.wav", true);
+		snd().beginStream();
 		inited = true;
 	}
 

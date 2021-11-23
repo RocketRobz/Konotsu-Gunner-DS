@@ -6,88 +6,28 @@
 
 #include <string.h>
 #include <unistd.h>
-#include <maxmod9.h>
 #include "gl2d.h"
 
 #include "graphics/graphics.h"
-
 #include "graphics/fontHandler.h"
+#include "sound.h"
+#include "myDSiMode.h"
+#include "nitrofs.h"
 
 #include "logos.h"
 #include "mainmenu.h"
 #include "player.h"
 #include "level.h"
 
-#include "soundbank.h"
-#include "soundbank_bin.h"
-
 bool useTwlCfg = false;
+u32* twlCfgPointer = (u32*)0x02FFFDFC;
+u8* twlCfgAddr = (u8*)0;
 int language = 0;
 
 bool wideScreen = false;
 bool fadeType = false;				// false = out, true = in
 bool fadeColor = true;
 int screenMode = 0;
-
-static mm_sound_effect snd_GUNSHT;
-static mm_sound_effect snd_AMMOOUT;
-static mm_sound_effect snd_HURT;
-
-void InitSound() {
-	mmInitDefaultMem((mm_addr)soundbank_bin);
-	
-	mmLoadEffect( SFX_GUNSHT );
-	mmLoadEffect( SFX_AMMOOUT );
-	mmLoadEffect( SFX_HURT );
-
-	snd_GUNSHT = {
-		{ SFX_GUNSHT } ,			// id
-		(int)(1.0f * (1<<10)),	// rate
-		0,		// handle
-		255,	// volume
-		128,	// panning
-	};
-
-	snd_AMMOOUT = {
-		{ SFX_AMMOOUT } ,			// id
-		(int)(1.0f * (1<<10)),	// rate
-		0,		// handle
-		255,	// volume
-		128,	// panning
-	};
-
-	snd_HURT = {
-		{ SFX_HURT } ,			// id
-		(int)(1.0f * (1<<10)),	// rate
-		0,		// handle
-		255,	// volume
-		128,	// panning
-	};
-
-	mmLoad(MOD_THMA);
-	mmLoad(MOD_TENSE);
-	mmSetModuleVolume(500);
-}
-
-void playPromiseMusic() {
-	mmStart(MOD_THMA, MM_PLAY_LOOP);
-}
-
-void playAltitMusic() {
-	mmStart(MOD_TENSE, MM_PLAY_LOOP);
-}
-
-void sndShoot() {
-	mmEffectEx(&snd_GUNSHT);
-}
-
-void sndAmmoOut() {
-	mmEffectEx(&snd_AMMOOUT);
-}
-
-void sndHurt() {
-	mmEffectEx(&snd_HURT);
-}
 
 //---------------------------------------------------------------------------------
 void stop (void) {
@@ -116,14 +56,27 @@ int main(int argc, char **argv) {
 
 	defaultExceptionHandler();
 
-	useTwlCfg = (isDSiMode() && (*(u8*)0x02000400 & 0x0F) && (*(u8*)0x02000404 == 0));
+	bool fatInited = fatInitDefault();
+	bool nitroInited = nitroFSInit(argv[0]);
+	if (!fatInited && !nitroInited) {
+		consoleDemoInit();
+		iprintf("fatInitDefault failed!");
+		stop();
+	}
+
+	if (dsiFeatures()) {
+		if (*twlCfgPointer < 0x02000000 || *twlCfgPointer >= 0x03000000) {
+			*twlCfgPointer = 0x02000400;
+		}
+		twlCfgAddr = (u8*)*twlCfgPointer;
+		useTwlCfg = ((twlCfgAddr[0] != 0) && (twlCfgAddr[1] == 0) && (twlCfgAddr[2] == 0) &&
+					 (twlCfgAddr[4] == 0));
+	}
 	wideScreen = (strcmp(argv[1], "wide") == 0);
 
-	language = (useTwlCfg ? *(u8*)0x02000406 : PersonalData->language);
+	language = (useTwlCfg ? twlCfgAddr[6] : PersonalData->language);
 
-	//fatInitDefault();
-
-	InitSound();	
+	snd();	
 	graphicsInit();
 	fontInit();
 
@@ -145,6 +98,7 @@ int main(int argc, char **argv) {
 		}
 		swiWaitForVBlank();
 		oamUpdate(&oamSub);
+		snd().updateStream();
 	}
 
 	return 0;

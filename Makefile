@@ -29,6 +29,7 @@ SOURCES		:=	source source/graphics
 INCLUDES	:=	include
 DATA		:=	data  
 GRAPHICS	:=  gfx
+NITRODATA	:=	nitrofiles
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -126,10 +127,10 @@ dist:	all
 	@tar -cvjf $(TARGET)-$(VERSION).tar.bz2 hbmenu testfiles README.html COPYING hbmenu -X exclude.lst
 	
 $(TARGET).nds:	$(TARGET).arm7 $(TARGET).arm9
-	ndstool	-c $(TARGET).nds -7 $(TARGET).arm7.elf -9 $(TARGET).arm9.elf \
-			-b icon.bmp "Konotsu Gunner;Yellow Locker, RocketRobz" \
+	ndstool	-c $(TARGET).nds -7 $(TARGET).arm7.elf -9 $(TARGET).arm9.elf -d $(NITRODATA) \
+			-b icon.bmp "Konotsu Gunner;Yellow Locker, Rocket Robz" \
 			-g WKGA 00 "KONOGUNNER" -z 80040000 -u 00030004 
-	python27 fix_ndsheader.py $(CURDIR)/$(TARGET).nds
+	python2 fix_ndsheader.py $(CURDIR)/$(TARGET).nds
 
 $(TARGET).arm7: arm7/$(TARGET).elf
 	cp arm7/$(TARGET).elf $(TARGET).arm7.elf
