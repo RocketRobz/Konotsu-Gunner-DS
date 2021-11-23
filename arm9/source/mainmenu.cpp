@@ -138,7 +138,7 @@ void menuScreen(void) {
 void renderMenuTop(void) {
 	for (int x = 0; x < (wideScreen ? 20 : 16); x++) {
 		for (int y = 0; y < 13; y++) {
-			glSprite((x*16), (y*16)+bgYpos, GL_FLIP_NONE, &tileImage[1]);
+			glSprite((x*16), (y*16)+bgYpos, GL_FLIP_NONE, &tileImage[2]);
 		}
 	}
 	for (int x = 0; x < 8; x++) {
