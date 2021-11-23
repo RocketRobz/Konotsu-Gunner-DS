@@ -3,6 +3,7 @@
 
 #include "graphics/fontHandler.h"
 #include "graphics/graphics.h"
+#include "tonccpy.h"
 #include "sound.h"
 
 #include "player.h"
@@ -11,9 +12,6 @@
 #include "spr_aimbutton.h"
 #include "tiles.h"
 #include "tilenum.h"
-
-#include "testmap.h"
-#include "level_kglf.h"
 
 #define bgTile 11
 #define grayBlockTile 17
@@ -86,10 +84,26 @@ bool isSolidTile(u8 tile) {
 	return false;
 }
 
-void loadLevel(u8* orgMapData) {
+void loadLevel(const char* filename) {
 	mapHsize = -1;
 	mapVsize = -1;
-	memset(mapData, 7, sizeof(mapData));
+	toncset(mapData, 7, sizeof(mapData));
+
+	off_t klvFileSize = 0;
+
+	FILE* klvFile = fopen(filename, "rb");
+
+	fseek(klvFile, 0, SEEK_END);
+	klvFileSize = ftell(klvFile);			// Get source file's size
+	fseek(klvFile, 0, SEEK_SET);
+	if (klvFileSize == 0) {
+		return;
+	}
+
+	u8* orgMapData = new u8[klvFileSize];
+
+	fread(orgMapData, 1, klvFileSize, klvFile);
+	fclose(klvFile);
 
 	bool mapHsizeSet = false;
 	bool processTile = false;
@@ -117,8 +131,8 @@ void loadLevel(u8* orgMapData) {
 		if (!mapHsizeSet) {
 			mapHsize++;
 		}
-		if (orgMapData[i2] == '1') {
-			setPlayerPosition(0, generatedPlayerX, (mapVsize*16)-16);
+		if (orgMapData[i2] == '1' || orgMapData[i2] == '2') {
+			setPlayerPosition((orgMapData[i2] == '2' ? 1 : 0), generatedPlayerX, (mapVsize*16)-16);
 		} else
 		if (processTile) {
 			for (int i3 = 0; i3 < (int)sizeof(textTiles); i3++) {
@@ -130,14 +144,13 @@ void loadLevel(u8* orgMapData) {
 			processTile = false;
 		}
 	}
+
+	delete[] orgMapData;
 }
 
 void levelMode(void) {
 	if (!inited) {
-		loadLevel(level_kglf);
-
-		//setPlayerPosition(0, testMap_player1X, testMap_player1Y);
-		setPlayerPosition(1, testMap_player2X, testMap_player2Y);
+		loadLevel("nitro:/klv/level.klv");
 
 		playerGraphicLoad();
 		decompress(bottomImageBitmap, bgGetGfxPtr(bg3), LZ77Vram);
@@ -147,7 +160,7 @@ void levelMode(void) {
 
 		gfxSub = oamAllocateGfx(&oamSub, SpriteSize_32x64, SpriteColorFormat_16Color);
 
-		memcpy(gfxSub, spr_aimbuttonTiles, spr_aimbuttonTilesLen);
+		tonccpy(gfxSub, spr_aimbuttonTiles, spr_aimbuttonTilesLen);
 
 		for (int i = 0; i < 16; i++) {
 			SPRITE_PALETTE_SUB[i] = spr_aimbuttonPal[i];
