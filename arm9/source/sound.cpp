@@ -41,6 +41,7 @@ SoundControl::SoundControl()
 	mmLoadEffect( SFX_AMMOOUT );
 	mmLoadEffect( SFX_HURT );
 	mmLoadEffect( SFX_PLYRJMP8 );
+	mmLoadEffect( SFX_GUNEMPTY );
 
 	snd_gunsht = {
 		{ SFX_GUNSHT } ,			// id
@@ -73,12 +74,21 @@ SoundControl::SoundControl()
 		255,	// volume
 		128,	// panning
 	};
+
+	snd_gunempty = {
+		{ SFX_GUNEMPTY } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
 }
 
 mm_sfxhand SoundControl::playGunsht() { return mmEffectEx(&snd_gunsht); }
 mm_sfxhand SoundControl::playAmmoOut() { return mmEffectEx(&snd_ammoout); }
 mm_sfxhand SoundControl::playHurt() { return mmEffectEx(&snd_hurt); }
 mm_sfxhand SoundControl::playJump() { return mmEffectEx(&snd_jump); }
+mm_sfxhand SoundControl::playEmptyChamber() { return mmEffectEx(&snd_gunempty); }
 
 void SoundControl::loadStream(const char* path, bool loop) {
 	if (stream_source) {
