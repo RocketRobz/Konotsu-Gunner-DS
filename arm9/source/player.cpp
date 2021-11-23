@@ -15,6 +15,7 @@
 extern void sndShoot();
 extern void sndAmmoOut();
 extern void sndHurt();
+extern void sndJump();
 
 extern u8 mapData[];
 
@@ -348,6 +349,7 @@ void playerLoop(int pressed, int held) {
 	
 	if (((pressed & KEY_UP) || (pressed & KEY_B)) && allowPlayerJump[0]) {
 		playerJump[0] = true;
+		sndJump();
 		airJumpEffctX[0] = (playerDirection[0] ? playerX[0]-6 : playerX[0]);
 		airJumpEffctY[0] = playerY[0]+20;
 		airJumpEffctFrame[0] = 0;
