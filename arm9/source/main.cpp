@@ -65,7 +65,7 @@ void InitSound() {
 	};
 
 	mmLoad(MOD_THMA);
-	mmLoad(MOD_ALTIT);
+	mmLoad(MOD_TENSE);
 	mmSetModuleVolume(500);
 }
 
@@ -74,7 +74,7 @@ void playPromiseMusic() {
 }
 
 void playAltitMusic() {
-	mmStart(MOD_ALTIT, MM_PLAY_LOOP);
+	mmStart(MOD_TENSE, MM_PLAY_LOOP);
 }
 
 void sndShoot() {
