@@ -138,16 +138,16 @@ void menuScreen(void) {
 void renderMenuTop(void) {
 	for (int x = 0; x < (wideScreen ? 20 : 16); x++) {
 		for (int y = 0; y < 13; y++) {
-		//	glSprite((x*16), (y*16)+bgYpos, GL_FLIP_NONE, &tileImage[2]);
+			glSprite((x*16), (y*16)+bgYpos, GL_FLIP_NONE, &tileImage[0]);
 		}
 	}
 	for (int x = 0; x < 8; x++) {
 		for (int y = 0; y < 6; y++) {
-		//	glSprite((x*32)+(wideScreen ? 22 : 0), y*32, GL_FLIP_NONE, &titleImage[(y*8)+x]);
+			glSprite((x*32)+(wideScreen ? 22 : 0), y*32, GL_FLIP_NONE, &titleImage[(y*8)+x]);
 		}
 	}
 
 	//bgYpos -= 0.5;
-	if (bgYpos < -8.5) bgYpos = 0;
-	bgScroll(bg3, 0, bgYpos);
+	//if (bgYpos < -8.5) bgYpos = 0;
+	//bgScroll(bg3, 0, bgYpos);
 }
