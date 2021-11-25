@@ -8,6 +8,10 @@
 *.DS_Store
 *soundbank*.bin
 *.bak
+*.*.mptm
+*.*.*.mptm
+*.*.xm
+*.*.*.xm
 thumbs.db
 
 # Build Directory
